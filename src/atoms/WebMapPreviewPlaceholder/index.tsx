@@ -1,24 +1,32 @@
 import { Image } from "expo-image";
 import { ImageIcon, Smartphone } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Linking, Platform, StyleSheet, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from "react-native";
 
 import { AppStoreIcon } from "../AppStoreIcon";
 import { PlayStoreIcon } from "../PlayStoreIcon";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/site-metadata";
+import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
-/* TODO: add images for dark mode */
 const DEFAULT_PHONE_ASPECT_RATIO = 9 / 19.5;
 
 type WebMapPreviewPlaceholderProps = {
   className?: string;
   title?: string;
   previewImage?: string;
+  previewImageDark?: string;
   layout?: "overlay" | "aside";
 };
 
@@ -80,7 +88,10 @@ function PreviewImage({
         />
       ) : (
         <View className="absolute inset-0 items-center justify-center text-muted-foreground">
-          <ImageIcon className="size-10 opacity-75" />
+          <Icon
+            as={ImageIcon}
+            className="text-muted-foreground size-10 opacity-75"
+          />
         </View>
       )}
     </View>
@@ -88,8 +99,12 @@ function PreviewImage({
 }
 
 function StoreButtons({ variant }: { variant: "overlay" | "aside" }) {
+  const colorScheme = useColorScheme();
+  const colors = THEME[colorScheme === "dark" ? "dark" : "light"];
   const showAppStore = SITE_APP_STORE_URL.length > 0;
   const showPlayStore = SITE_PLAY_STORE_URL.length > 0;
+  const iconColor =
+    variant === "overlay" ? "#000000" : colors.primaryForeground;
 
   if (!showAppStore && !showPlayStore) {
     return null;
@@ -120,7 +135,7 @@ function StoreButtons({ variant }: { variant: "overlay" | "aside" }) {
         >
           <AppStoreIcon
             size={14}
-            color={variant === "overlay" ? "#000" : "currentColor"}
+            color={iconColor}
           />
           <Text className={labelClassName}>App Store</Text>
         </Button>
@@ -138,7 +153,7 @@ function StoreButtons({ variant }: { variant: "overlay" | "aside" }) {
         >
           <PlayStoreIcon
             size={14}
-            color={variant === "overlay" ? "#000" : "currentColor"}
+            color={iconColor}
           />
           <Text className={labelClassName}>Google Play</Text>
         </Button>
@@ -163,7 +178,8 @@ function PreviewInfo({
         <View className="gap-5">
           <View className="flex-row items-center gap-3">
             <View className="bg-primary/10 rounded-lg p-2.5">
-              <Smartphone
+              <Icon
+                as={Smartphone}
                 size={20}
                 className="text-primary"
               />
@@ -231,15 +247,34 @@ export function WebMapPreviewPlaceholder({
   className,
   title = "Map preview",
   previewImage,
+  previewImageDark,
   layout = "overlay",
 }: WebMapPreviewPlaceholderProps) {
+  const colorScheme = useColorScheme() === "dark" ? "dark" : "light";
   const [failedImage, setFailedImage] = useState<string | null>(null);
+  const [useLightFallback, setUseLightFallback] = useState(false);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
   const hasFixedHeight = Boolean(className?.match(/(?:^|\s)h-/));
 
+  const activePreviewImage =
+    colorScheme === "dark" && previewImageDark && !useLightFallback
+      ? previewImageDark
+      : previewImage;
+
   useEffect(() => {
+    setFailedImage(null);
+    setUseLightFallback(false);
     setImageAspectRatio(null);
-  }, [previewImage]);
+  }, [previewImage, previewImageDark, colorScheme]);
+
+  function handleImageError(image: string) {
+    if (image === previewImageDark && previewImage) {
+      setUseLightFallback(true);
+      return;
+    }
+
+    setFailedImage(image);
+  }
 
   if (layout === "aside") {
     return (
@@ -251,9 +286,9 @@ export function WebMapPreviewPlaceholder({
             className,
           )}
           contentFit={hasFixedHeight ? "contain" : "cover"}
-          previewImage={previewImage}
+          previewImage={activePreviewImage}
           failedImage={failedImage}
-          onImageError={setFailedImage}
+          onImageError={handleImageError}
           onImageLoad={setImageAspectRatio}
           imageAspectRatio={imageAspectRatio}
         />
@@ -274,9 +309,9 @@ export function WebMapPreviewPlaceholder({
     >
       <PreviewImage
         className="absolute inset-0"
-        previewImage={previewImage}
+        previewImage={activePreviewImage}
         failedImage={failedImage}
-        onImageError={setFailedImage}
+        onImageError={handleImageError}
       />
       <PreviewInfo
         title={title}

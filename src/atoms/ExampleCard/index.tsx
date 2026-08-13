@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 type ExampleCardProps = {
   className?: string;
   previewImage?: string;
+  previewImageDark?: string;
 };
 
 export function ExampleCard({
@@ -15,7 +16,7 @@ export function ExampleCard({
   return (
     <View
       className={cn(
-        "bg-card border-border/50 relative w-full overflow-hidden rounded-xl border shadow-sm",
+        "bg-card border-border relative w-full overflow-hidden rounded-xl border shadow-sm",
         className,
       )}
     >

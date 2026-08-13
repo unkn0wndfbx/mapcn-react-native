@@ -6,7 +6,10 @@ import { ExampleCard } from "@/atoms/ExampleCard";
 import { ExampleMap } from "@/atoms/ExampleMap";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
+import { getPreviewImages } from "@/lib/preview-images";
 import { MapMarker, MarkerContent, MarkerPopup } from "@/registry/map";
+
+const analyticsPreview = getPreviewImages("home-analytics");
 
 const analyticsData = [
   { lng: -74.006, lat: 40.7128, city: "New York", users: 847, size: 14 },
@@ -29,9 +32,10 @@ export function AnalyticsExample() {
   return (
     <ExampleCard
       className="aspect-square min-h-[280px]"
-      previewImage="/images/previews/home-analytics.png"
+      previewImage={analyticsPreview.light}
+      previewImageDark={analyticsPreview.dark}
     >
-      <View className="bg-background/95 border-border/50 absolute top-3 left-3 z-10 rounded-lg border p-3 shadow-lg">
+      <View className="bg-background/95 border-border absolute top-3 left-3 z-10 rounded-lg border p-3 shadow-lg">
         <Text className="text-muted-foreground mb-1 text-[10px] tracking-wider uppercase">
           Active Users
         </Text>

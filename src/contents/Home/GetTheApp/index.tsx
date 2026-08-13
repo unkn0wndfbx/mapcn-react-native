@@ -9,17 +9,21 @@ import { PlayStoreIcon } from "@/atoms/PlayStoreIcon";
 import { QrCode } from "@/atoms/QrCode";
 import { StoreBadgeButton } from "@/atoms/StoreBadgeButton";
 import { Badge } from "@/components/ui/badge";
+import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
+import { getPreviewImages } from "@/lib/preview-images";
 import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/site-metadata";
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
-const PREVIEW_IMAGE = "/images/previews/landing-page.png";
+const landingPagePreview = getPreviewImages("landing-page");
 const QR_SIZE = 132;
 
 export function GetTheApp() {
-  const colorScheme = useColorScheme();
-  const colors = THEME[colorScheme === "dark" ? "dark" : "light"];
+  const colorScheme = useColorScheme() === "dark" ? "dark" : "light";
+  const colors = THEME[colorScheme];
+  const previewImage =
+    colorScheme === "dark" ? landingPagePreview.dark : landingPagePreview.light;
   const iconColor = colors.background;
   const showAppStore = SITE_APP_STORE_URL.length > 0;
   const showPlayStore = SITE_PLAY_STORE_URL.length > 0;
@@ -29,7 +33,7 @@ export function GetTheApp() {
     <View className="w-full pb-16 md:pb-20">
       <View
         className={cn(
-          "border-border/50 relative overflow-hidden rounded-3xl border",
+          "border-border relative overflow-hidden rounded-3xl border",
           Platform.select({
             web: "bg-[radial-gradient(120%_80%_at_10%_0%,oklch(0.96_0.02_240),transparent_55%),radial-gradient(90%_70%_at_95%_15%,oklch(0.95_0.03_145),transparent_50%),var(--surface)] dark:bg-[radial-gradient(120%_80%_at_10%_0%,oklch(0.28_0.03_240),transparent_55%),radial-gradient(90%_70%_at_95%_15%,oklch(0.27_0.04_145),transparent_50%),var(--surface)]",
             default: "bg-surface",
@@ -53,7 +57,10 @@ export function GetTheApp() {
                 variant="secondary"
                 className="self-start"
               >
-                <Smartphone size={12} />
+                <Icon
+                  as={Smartphone}
+                  size={12}
+                />
                 <Text>iOS & Android</Text>
               </Badge>
 
@@ -129,9 +136,9 @@ export function GetTheApp() {
           </View>
 
           <View className="items-center justify-center lg:w-[42%]">
-            <Phone>
+            <Phone contentTheme={colorScheme}>
               <Image
-                source={PREVIEW_IMAGE}
+                source={previewImage}
                 contentFit="cover"
                 style={{ width: "100%", height: "100%" }}
                 accessibilityLabel="Map markers preview on a phone"
