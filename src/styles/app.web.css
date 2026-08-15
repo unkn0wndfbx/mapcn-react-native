@@ -1,2 +1,48 @@
 @import "./global.css";
 @import "./dark-mode.web.css";
+
+:root {
+  --modal-open-dur: 250ms;
+  --modal-close-dur: 150ms;
+  --modal-scale: 0.96;
+  --modal-scale-close: 0.96;
+  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-slot="dialog-overlay"][data-state="open"] {
+  animation: dialog-overlay-in var(--modal-open-dur) var(--modal-ease);
+}
+
+[data-slot="dialog-content"][data-state="open"],
+[role="dialog"][data-state="open"] {
+  transform-origin: center;
+  animation: dialog-content-in var(--modal-open-dur) var(--modal-ease);
+}
+
+@keyframes dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--modal-scale));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-overlay"][data-state="open"],
+  [data-slot="dialog-content"][data-state="open"],
+  [role="dialog"][data-state="open"] {
+    animation: none !important;
+  }
+}
