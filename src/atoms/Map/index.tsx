@@ -48,7 +48,7 @@ import Svg, { Path } from "react-native-svg";
 
 import { Icon } from "@/atoms/Icon";
 import { TextClassContext } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 const defaultStyles = {
   dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",

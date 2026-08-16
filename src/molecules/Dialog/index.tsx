@@ -15,7 +15,7 @@ import { FullWindowOverlay as RNFullWindowOverlay } from "react-native-screens";
 
 import { Icon } from "@/atoms/Icon";
 import { NativeOnlyAnimatedView } from "@/atoms/NativeOnlyAnimatedView";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 const Dialog = DialogPrimitive.Root;
 

@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
 import { Text } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 type HeaderAlign = "center" | "left";
 type HeaderSize = "default" | "sm";

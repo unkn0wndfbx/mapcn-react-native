@@ -3,7 +3,7 @@ import { useCssElement } from "nativewind";
 import * as React from "react";
 
 import { TextClassContext } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 type IconProps = LucideProps & {
   as: LucideIcon;

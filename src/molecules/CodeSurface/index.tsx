@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 interface CodeSurfaceProps extends Omit<
   React.ComponentProps<"div">,

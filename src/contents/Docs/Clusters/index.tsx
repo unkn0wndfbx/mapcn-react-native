@@ -1,17 +1,19 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { ClusterExample } from "../Common/Examples/Cluster";
-import { DocsCode, DocsLayout, DocsSection } from "../Common/Layout";
 
 import { Text } from "@/atoms/Text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function ClustersPage() {
   const clusterPreview = getPreviewImages("cluster");
   const clusterSource = getExampleSource("cluster-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Clusters"
       description="Visualize large datasets with automatic point clustering."
       prev={{ title: "GeoJSON", href: "/docs/geojson" }}
@@ -40,6 +42,6 @@ export function ClustersPage() {
           <ClusterExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

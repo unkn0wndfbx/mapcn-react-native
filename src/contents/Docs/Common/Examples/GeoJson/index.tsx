@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { WORLD_GEOJSON } from "@/lib/use-world-data";
+import { WORLD_GEOJSON } from "@/lib/Data/WorldGeoJson";
 import { Map, MapGeoJSON } from "@/registry/map";
 
 export function GeoJSONExample() {

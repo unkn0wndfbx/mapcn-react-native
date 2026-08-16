@@ -1,19 +1,17 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { BasicMapExample } from "../Common/Examples/BasicMap";
 import { BlankMapExample } from "../Common/Examples/BlankMap";
 import { ControlledMapExample } from "../Common/Examples/ControlledMap";
 import { CustomStyleExample } from "../Common/Examples/CustomStyle";
-import {
-  DocsCode,
-  DocsLayout,
-  DocsLink,
-  DocsNote,
-  DocsSection,
-} from "../Common/Layout";
 
 import { Text } from "@/atoms/Text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function BasicMapPage() {
   const basicMapPreview = getPreviewImages("basic-map");
@@ -26,7 +24,7 @@ export function BasicMapPage() {
   const blankMapSource = getExampleSource("blank-map-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Map"
       description="The simplest way to add an interactive map to your React Native app."
       prev={{ title: "API Reference", href: "/docs/api-reference" }}
@@ -119,6 +117,6 @@ export function BasicMapPage() {
           <CustomStyleExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

@@ -13,14 +13,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FullWindowOverlay as RNFullWindowOverlay } from "react-native-screens";
 
-import { Logo } from "../../molecules/Logo";
-
 import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { NativeOnlyAnimatedView } from "@/atoms/NativeOnlyAnimatedView";
 import { Text } from "@/atoms/Text";
-import { siteNavigation } from "@/lib/site-navigation";
-import { cn } from "@/lib/utils";
+import { siteNavigation } from "@/lib/Config/SiteNavigation";
+import { cn } from "@/lib/Utils/Cn";
+import { Logo } from "@/molecules/Logo";
 
 const Dialog = DialogPrimitive.Root;
 const DialogPortal = DialogPrimitive.Portal;

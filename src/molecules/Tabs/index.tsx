@@ -2,7 +2,7 @@ import * as TabsPrimitive from "@rn-primitives/tabs";
 import { Platform } from "react-native";
 
 import { TextClassContext } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 function Tabs({
   className,

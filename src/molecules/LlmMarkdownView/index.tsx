@@ -1,7 +1,7 @@
 import { ScrollView } from "react-native";
 
 import { Text } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 type LlmMarkdownViewProps = {
   markdown: string;

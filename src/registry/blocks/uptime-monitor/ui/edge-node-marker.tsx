@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { statusMeta, type EdgeNode } from "../data";
 
 import { Text } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 import { MapMarker, MarkerContent, MarkerTooltip } from "@/registry/map";
 
 interface EdgeNodeMarkerProps {

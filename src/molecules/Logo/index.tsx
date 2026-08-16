@@ -3,9 +3,9 @@ import { Pressable, useColorScheme, View } from "react-native";
 import Svg, { Circle, Path, Rect } from "react-native-svg";
 
 import { Text } from "@/atoms/Text";
-import { SITE_NAME } from "@/lib/site-metadata";
-import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { SITE_NAME } from "@/lib/Config/SiteMetadata";
+import { THEME } from "@/lib/Config/Theme";
+import { cn } from "@/lib/Utils/Cn";
 
 type LogoProps = {
   className?: string;

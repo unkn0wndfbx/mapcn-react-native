@@ -6,7 +6,7 @@ import type { Store } from "../data";
 
 import { Icon } from "@/atoms/Icon";
 import { Text } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 import {
   Map,
   MapControls,

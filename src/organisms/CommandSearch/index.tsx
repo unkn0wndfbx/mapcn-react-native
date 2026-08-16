@@ -4,13 +4,12 @@ import { FileText, SearchIcon } from "lucide-react-native";
 import * as React from "react";
 import { Platform, View } from "react-native";
 
-import { Button } from "../../atoms/Button";
-
+import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { Kbd } from "@/atoms/Kbd";
 import { Text } from "@/atoms/Text";
-import { siteNavigation } from "@/lib/site-navigation";
-import { cn } from "@/lib/utils";
+import { siteNavigation } from "@/lib/Config/SiteNavigation";
+import { cn } from "@/lib/Utils/Cn";
 import {
   CommandDialog,
   CommandEmpty,

@@ -1,15 +1,14 @@
 import { Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Separator } from "../../atoms/Separator";
-import { GitHubButton } from "../../molecules/GitHubButton";
-import { Logo } from "../../molecules/Logo";
-import { MainNav } from "../../molecules/MainNav";
-import { CommandSearch } from "../CommandSearch";
-import { MobileNav } from "../MobileNav";
-
-import { ThemeToggle } from "@/atoms/ThemeToggle";
-import { cn } from "@/lib/utils";
+import { Separator } from "@/atoms/Separator";
+import { cn } from "@/lib/Utils/Cn";
+import { GitHubButton } from "@/molecules/GitHubButton";
+import { Logo } from "@/molecules/Logo";
+import { MainNav } from "@/molecules/MainNav";
+import { ThemeToggle } from "@/molecules/ThemeToggle";
+import { CommandSearch } from "@/organisms/CommandSearch";
+import { MobileNav } from "@/organisms/MobileNav";
 
 type HeaderProps = {
   className?: string;

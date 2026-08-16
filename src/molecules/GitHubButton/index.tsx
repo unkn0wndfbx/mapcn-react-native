@@ -6,8 +6,8 @@ import Svg, { Path } from "react-native-svg";
 import { Button } from "@/atoms/Button";
 import { Skeleton } from "@/atoms/Skeleton";
 import { Text } from "@/atoms/Text";
-import { openExternalUrl } from "@/lib/link";
-import { THEME } from "@/lib/theme";
+import { openExternalUrl } from "@/lib/Platform/Link";
+import { THEME } from "@/lib/Config/Theme";
 
 const GITHUB_REPO_URL = "https://github.com/unkn0wndfbx/mapcn-react-native";
 const GITHUB_API_URL =

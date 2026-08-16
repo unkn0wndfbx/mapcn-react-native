@@ -1,7 +1,7 @@
 import { Platform, View, type ViewProps } from "react-native";
 
 import { Text } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 function Kbd({ className, children, ...props }: ViewProps) {
   return (

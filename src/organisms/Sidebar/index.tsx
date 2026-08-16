@@ -30,8 +30,8 @@ import { NativeOnlyAnimatedView } from "@/atoms/NativeOnlyAnimatedView";
 import { Separator } from "@/atoms/Separator";
 import { Skeleton } from "@/atoms/Skeleton";
 import { Text } from "@/atoms/Text";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/Mobile";
+import { cn } from "@/lib/Utils/Cn";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/molecules/Tooltip";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";

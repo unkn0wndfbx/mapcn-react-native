@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import { Text, TextClassContext } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 function Card({
   className,

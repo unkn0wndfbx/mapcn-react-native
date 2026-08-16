@@ -4,7 +4,7 @@ import { Check, Copy } from "lucide-react-native";
 import { useState } from "react";
 
 import { Button } from "@/atoms/Button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 interface CodeCopyButtonProps {
   text: string;

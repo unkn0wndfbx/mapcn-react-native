@@ -1,11 +1,11 @@
 import { Truck } from "lucide-react-native";
 import { View } from "react-native";
 
-import { ExampleCard } from "@/atoms/ExampleCard";
-import { ExampleMap } from "@/atoms/ExampleMap";
 import { Icon } from "@/atoms/Icon";
 import { Text } from "@/atoms/Text";
-import { getPreviewImages } from "@/lib/preview-images";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ExampleCard } from "@/molecules/ExampleCard";
+import { ExampleMap } from "@/molecules/ExampleMap";
 import {
   MapMarker,
   MapRoute,

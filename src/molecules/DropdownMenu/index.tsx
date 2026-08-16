@@ -20,7 +20,7 @@ import { FullWindowOverlay as RNFullWindowOverlay } from "react-native-screens";
 import { Icon } from "@/atoms/Icon";
 import { NativeOnlyAnimatedView } from "@/atoms/NativeOnlyAnimatedView";
 import { TextClassContext } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -327,5 +327,6 @@ export {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 };
+

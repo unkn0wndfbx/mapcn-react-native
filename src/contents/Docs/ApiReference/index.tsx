@@ -1,13 +1,3 @@
-import { CodeBlock } from "../Common/CodeBlock";
-import {
-  DocsCode,
-  DocsLayout,
-  DocsLink,
-  DocsNote,
-  DocsPropTable,
-  DocsSection,
-} from "../Common/Layout";
-
 import {
   mapArcProps,
   mapClusterLayerProps,
@@ -24,6 +14,13 @@ import {
 } from "./props";
 
 import { Text } from "@/atoms/Text";
+import { CodeBlock } from "@/molecules/CodeBlock";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsPropTable } from "@/molecules/DocsPropTable";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 const anatomyCode = `<Map>
   <MapMarker longitude={...} latitude={...}>
@@ -46,7 +43,7 @@ const mapHookExample = `const { map, camera, isLoaded, viewport, resolvedTheme }
 
 export function ApiReferencePage() {
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="API Reference"
       description="Complete reference for all map components and their props."
       prev={{ title: "Installation", href: "/docs/installation" }}
@@ -306,6 +303,6 @@ export function ApiReferencePage() {
         </Text>
         <DocsPropTable props={mapClusterLayerProps} />
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

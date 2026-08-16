@@ -3,14 +3,13 @@ import type { LucideProps } from "lucide-react-native";
 import { Pressable, useColorScheme, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-import { PrivacyPolicyLink } from "../../atoms/PrivacyPolicyLink";
-import { Logo } from "../../molecules/Logo";
-
 import { Text } from "@/atoms/Text";
-import { openExternalUrl } from "@/lib/link";
-import { SITE_GITHUB_REPO } from "@/lib/site-metadata";
-import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { openExternalUrl } from "@/lib/Platform/Link";
+import { SITE_GITHUB_REPO } from "@/lib/Config/SiteMetadata";
+import { THEME } from "@/lib/Config/Theme";
+import { cn } from "@/lib/Utils/Cn";
+import { Logo } from "@/molecules/Logo";
+import { PrivacyPolicyLink } from "@/molecules/PrivacyPolicyLink";
 
 function GitHubIcon({ size = 16, color = "currentColor" }: LucideProps) {
   return (

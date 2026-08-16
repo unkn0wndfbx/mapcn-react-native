@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import { ErrorBoundary } from "../_layout";
 
-import { createLlmItemMarkdown, getRegistryItem } from "@/lib/llm-content";
+import { createLlmItemMarkdown, getRegistryItem } from "@/lib/Registry/LlmContent";
 import { LlmMarkdownView } from "@/molecules/LlmMarkdownView";
 
 export default function LlmItemScreen() {

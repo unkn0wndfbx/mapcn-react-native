@@ -9,7 +9,7 @@ import {
   SITE_NAME,
   SITE_OG_IMAGE,
   SITE_TWITTER_CREATOR,
-} from "@/lib/site-metadata";
+} from "@/lib/Config/SiteMetadata";
 
 type PageHeadProps = {
   title?: string;

@@ -1,17 +1,20 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { MapControlsExample } from "../Common/Examples/MapControls";
-import { DocsCode, DocsLayout, DocsNote, DocsSection } from "../Common/Layout";
 
 import { Text } from "@/atoms/Text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function ControlsPage() {
   const controlsPreview = getPreviewImages("controls");
   const controlsSource = getExampleSource("map-controls-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Controls"
       description="Add interactive controls to your map for zoom, compass, location, and fullscreen."
       prev={{ title: "Map", href: "/docs/basic-map" }}
@@ -44,6 +47,6 @@ export function ControlsPage() {
           <MapControlsExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

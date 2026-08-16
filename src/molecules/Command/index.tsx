@@ -12,7 +12,7 @@ import {
 import { Icon } from "@/atoms/Icon";
 import { Input } from "@/atoms/Input";
 import { Text } from "@/atoms/Text";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 import {
   Dialog,
   DialogContent,
@@ -207,5 +207,6 @@ export {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
+  CommandShortcut
 };
+

@@ -1,11 +1,10 @@
 import { PropsWithChildren } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 import { Text } from "@/atoms/Text";
-import { openExternalUrl } from "@/lib/link";
-import { SITE_GITHUB_REPO, SITE_NAME } from "@/lib/site-metadata";
-import { PageHead } from "@/molecules/PageHead";
-import { Footer } from "@/organisms/Footer";
+import { openExternalUrl } from "@/lib/Platform/Link";
+import { SITE_GITHUB_REPO, SITE_NAME } from "@/lib/Config/SiteMetadata";
+import { ArticlePageLayout } from "@/templates/ArticlePageLayout";
 
 const EFFECTIVE_DATE = "August 8, 2026";
 const APP_NAME = "mapcn-react-native";
@@ -51,28 +50,16 @@ function PrivacyListItem({ children }: PropsWithChildren) {
 
 export function PrivacyPage() {
   return (
-    <>
-      <PageHead
-        title="Privacy Policy"
-        description={`Privacy policy for the ${APP_NAME} mobile app and website.`}
-      />
-      <ScrollView
-        className="flex-1 bg-background"
-        contentContainerClassName="flex-grow"
-        showsVerticalScrollIndicator={false}
-      >
-        <View className="container mx-auto w-full max-w-3xl flex-1 px-4 py-10 md:py-16">
-          <View className="gap-3">
-            <Text className="text-foreground text-3xl font-semibold tracking-tight">
-              Privacy Policy
-            </Text>
-            <Text className="text-muted-foreground text-base leading-relaxed">
-              Effective date: {EFFECTIVE_DATE}
-            </Text>
-          </View>
-
-          <View className="mt-12 gap-10">
-            <PrivacySection title="Introduction">
+    <ArticlePageLayout
+      title="Privacy Policy"
+      description={`Privacy policy for the ${APP_NAME} mobile app and website.`}
+      subtitle={
+        <Text className="text-muted-foreground text-base leading-relaxed">
+          Effective date: {EFFECTIVE_DATE}
+        </Text>
+      }
+    >
+      <PrivacySection title="Introduction">
               <PrivacyParagraph>
                 This Privacy Policy describes how {DEVELOPER_NAME}{" "}
                 (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) handles
@@ -305,11 +292,6 @@ export function PrivacyPage() {
                 Android package name: {ANDROID_PACKAGE}
               </PrivacyParagraph>
             </PrivacySection>
-          </View>
-        </View>
-
-        <Footer />
-      </ScrollView>
-    </>
+    </ArticlePageLayout>
   );
 }

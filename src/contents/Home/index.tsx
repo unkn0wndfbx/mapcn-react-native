@@ -1,33 +1,25 @@
 import { Link } from "expo-router";
-import { useState } from "react";
-import { Platform, ScrollView, StyleProp, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, View, ViewStyle } from "react-native";
 
 import { ExamplesGrid } from "./ExamplesGrid";
-import { GetTheApp } from "./GetTheApp";
 
 import { Button } from "@/atoms/Button";
 import { Text } from "@/atoms/Text";
-import { AgentPrompt } from "@/contents/Home/AgentPrompt";
-import { ParentScrollLockProvider } from "@/lib/parent-scroll-lock";
-import { Footer } from "@/organisms/Footer";
+import { AgentPrompt } from "@/molecules/AgentPrompt";
+import { GetTheApp } from "@/organisms/GetTheApp";
 import {
   PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/organisms/PageHeader";
+import { ScrollPageLayout } from "@/templates/ScrollPageLayout";
 
 export const HomePage = () => {
-  const [scrollEnabled, setScrollEnabled] = useState(true);
-
   return (
-    <ParentScrollLockProvider setScrollEnabled={setScrollEnabled}>
-      <ScrollView
-        className="flex-1 bg-background"
-        contentContainerClassName="flex-grow"
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={scrollEnabled}
-      >
+    <ScrollPageLayout
+      lockParentScroll
+      header={
         <PageHeader>
           <PageHeaderHeading>Beautiful maps, made simple</PageHeaderHeading>
           <PageHeaderDescription>
@@ -62,20 +54,18 @@ export const HomePage = () => {
             <AgentPrompt />
           </PageActions>
         </PageHeader>
-
-        <View
-          className="animate-fade-up animate-stagger mx-auto w-full flex-1 container"
-          style={
-            {
-              "--stagger": 4.5,
-            } as StyleProp<ViewStyle>
-          }
-        >
-          {Platform.OS === "web" ? <GetTheApp /> : <ExamplesGrid />}
-        </View>
-
-        <Footer />
-      </ScrollView>
-    </ParentScrollLockProvider>
+      }
+    >
+      <View
+        className="animate-fade-up animate-stagger mx-auto w-full flex-1 container"
+        style={
+          {
+            "--stagger": 4.5,
+          } as StyleProp<ViewStyle>
+        }
+      >
+        {Platform.OS === "web" ? <GetTheApp /> : <ExamplesGrid />}
+      </View>
+    </ScrollPageLayout>
   );
 };

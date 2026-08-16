@@ -1,18 +1,15 @@
 import { View } from "react-native";
 
-import { ComponentPreview } from "../Common/ComponentPreview";
-import { InstallCommand } from "../Common/InstallCommand";
-import {
-  DocsCode,
-  DocsLayout,
-  DocsLink,
-  DocsNote,
-  DocsSection,
-} from "../Common/Layout";
-
 import { Text } from "@/atoms/Text";
-import { getPreviewImages } from "@/lib/preview-images";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsSection } from "@/molecules/DocsSection";
+import { InstallCommand } from "@/molecules/InstallCommand";
 import { Map, MapControls } from "@/registry/map";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 const usagePreview = getPreviewImages("installation");
 
@@ -36,7 +33,7 @@ export function MyMap() {
 
 export function InstallationPage() {
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Installation"
       description="How to install and set up mapcn in your project."
       prev={{ title: "Introduction", href: "/docs" }}
@@ -127,6 +124,6 @@ export function InstallationPage() {
         the device color scheme. Review your tile provider&apos;s terms before
         shipping a production app.
       </DocsNote>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

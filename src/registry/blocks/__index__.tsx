@@ -1,6 +1,6 @@
 import React from "react";
 
-import { RegistryBlockItem } from "@/lib/blocks";
+import { RegistryBlockItem } from "@/lib/Registry/Blocks";
 
 export const blockComponents: Record<
   RegistryBlockItem["name"],

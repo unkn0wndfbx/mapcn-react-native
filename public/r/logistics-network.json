@@ -14,7 +14,7 @@
   "files": [
     {
       "path": "src/registry/blocks/logistics-network/page.tsx",
-      "content": "import { View } from \"react-native\";\n\nimport { FilterSidebar } from \"./ui/filter-sidebar\";\nimport { NetworkMap } from \"./ui/network-map\";\nimport { hubs, routes } from \"./data\";\n\nexport default function Page() {\n  return (\n    <View className=\"h-screen flex-1 flex-row\">\n      <FilterSidebar\n        hubs={hubs}\n        routes={routes}\n      />\n      <View className=\"min-w-0 flex-1\">\n        <NetworkMap\n          hubs={hubs}\n          routes={routes}\n        />\n      </View>\n    </View>\n  );\n}\n",
+      "content": "import { View } from \"react-native\";\n\nimport { hubs, routes } from \"./data\";\nimport { FilterSidebar } from \"./ui/filter-sidebar\";\nimport { NetworkMap } from \"./ui/network-map\";\n\nexport default function Page() {\n  return (\n    <View className=\"h-screen flex-1 flex-row\">\n      <FilterSidebar\n        hubs={hubs}\n        routes={routes}\n      />\n      <View className=\"min-w-0 flex-1\">\n        <NetworkMap\n          hubs={hubs}\n          routes={routes}\n        />\n      </View>\n    </View>\n  );\n}\n",
       "type": "registry:page",
       "target": "app/logistics/page.tsx"
     },

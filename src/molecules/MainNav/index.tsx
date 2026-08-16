@@ -3,8 +3,8 @@ import { View } from "react-native";
 
 import { Button } from "@/atoms/Button";
 import { Text } from "@/atoms/Text";
-import { siteNavigation } from "@/lib/site-navigation";
-import { cn } from "@/lib/utils";
+import { siteNavigation } from "@/lib/Config/SiteNavigation";
+import { cn } from "@/lib/Utils/Cn";
 
 type MainNavProps = {
   className?: string;

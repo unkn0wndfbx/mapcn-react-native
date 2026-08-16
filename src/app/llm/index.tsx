@@ -1,4 +1,4 @@
-import { createLlmIndexMarkdown } from "@/lib/llm-content";
+import { createLlmIndexMarkdown } from "@/lib/Registry/LlmContent";
 import { LlmMarkdownView } from "@/molecules/LlmMarkdownView";
 
 export default function LlmIndexScreen() {

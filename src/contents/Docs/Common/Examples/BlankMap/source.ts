@@ -1,6 +1,6 @@
 export const blankMapExampleSource = `import { View } from "react-native";
 
-import { WORLD_GEOJSON } from "@/lib/use-world-data";
+import { WORLD_GEOJSON } from "@/lib/Data/WorldGeoJson";
 import { Map, MapGeoJSON } from "@/atoms/Map";
 
 export function BlankMapExample() {
