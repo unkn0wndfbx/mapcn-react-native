@@ -1,8 +1,13 @@
-"use client";
-
-import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react-native";
 import * as React from "react";
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+  View,
+  type ViewProps,
+} from "react-native";
 
 import {
   Dialog,
@@ -12,23 +17,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
+import { Input } from "@/components/ui/input";
+import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
-function Command({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive>) {
+function Command({ className, ...props }: ViewProps) {
   return (
-    <CommandPrimitive
-      data-slot="command"
+    <View
       className={cn(
-        "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
+        "bg-popover text-popover-foreground flex w-full flex-col overflow-hidden rounded-md",
         className,
       )}
       {...props}
     />
   );
 }
+
+const COMMAND_DIALOG_WIDTH = 510;
 
 function CommandDialog({
   title = "Command Palette",
@@ -43,22 +48,27 @@ function CommandDialog({
   className?: string;
   showCloseButton?: boolean;
 }) {
+  const { width: windowWidth } = useWindowDimensions();
+  const width = Math.min(COMMAND_DIALOG_WIDTH, Math.max(0, windowWidth - 32));
+
   return (
     <Dialog {...props}>
-      <DialogHeader className="sr-only">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
       <DialogContent
         className={cn(
-          "top-[min(22vh,10rem)] translate-y-0 overflow-hidden p-0",
+          "w-auto max-w-none self-center overflow-hidden p-0 sm:max-w-none",
           className,
         )}
+        overlayClassName={Platform.select({
+          web: "flex-col justify-start pt-[min(22vh,10rem)]",
+        })}
+        style={{ width }}
         showCloseButton={showCloseButton}
       >
-        <Command className="[&_[cmdk-group-heading]]:text-muted-foreground **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]]:px-2 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
-          {children}
-        </Command>
+        <DialogHeader className="sr-only">
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <Command>{children}</Command>
       </DialogContent>
     </Dialog>
   );
@@ -67,51 +77,45 @@ function CommandDialog({
 function CommandInput({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+}: React.ComponentProps<typeof Input>) {
   return (
-    <div
-      data-slot="command-input-wrapper"
-      className="flex h-9 items-center gap-2 border-b px-3"
-    >
+    <View className="border-border flex h-12 flex-row items-center gap-2 border-b px-3">
       <Icon
         as={SearchIcon}
         className="text-muted-foreground size-4 shrink-0 opacity-50"
       />
-      <CommandPrimitive.Input
-        data-slot="command-input"
+      <Input
         className={cn(
-          "placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+          "h-10 flex-1 border-0 bg-transparent! px-0 py-3 text-sm shadow-none",
+          Platform.select({
+            web: "focus-visible:ring-0",
+          }),
           className,
         )}
         {...props}
       />
-    </div>
+    </View>
   );
 }
 
 function CommandList({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.List>) {
+}: React.ComponentProps<typeof ScrollView>) {
   return (
-    <CommandPrimitive.List
-      data-slot="command-list"
-      className={cn(
-        "max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto",
-        className,
-      )}
+    <ScrollView
+      className={cn("max-h-[300px]", className)}
+      keyboardShouldPersistTaps="handled"
+      nestedScrollEnabled
       {...props}
     />
   );
 }
 
-function CommandEmpty({
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive.Empty>) {
+function CommandEmpty({ className, ...props }: ViewProps) {
   return (
-    <CommandPrimitive.Empty
-      data-slot="command-empty"
-      className="py-6 text-center text-sm"
+    <View
+      className={cn("items-center justify-center py-6", className)}
       {...props}
     />
   );
@@ -119,27 +123,30 @@ function CommandEmpty({
 
 function CommandGroup({
   className,
+  heading,
+  children,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Group>) {
+}: ViewProps & {
+  heading?: string;
+}) {
   return (
-    <CommandPrimitive.Group
-      data-slot="command-group"
-      className={cn(
-        "text-foreground [&_[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium",
-        className,
-      )}
+    <View
+      className={cn("overflow-hidden p-1", className)}
       {...props}
-    />
+    >
+      {heading ? (
+        <Text className="text-muted-foreground px-2 py-1.5 text-xs font-medium">
+          {heading}
+        </Text>
+      ) : null}
+      <View>{children}</View>
+    </View>
   );
 }
 
-function CommandSeparator({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive.Separator>) {
+function CommandSeparator({ className, ...props }: ViewProps) {
   return (
-    <CommandPrimitive.Separator
-      data-slot="command-separator"
+    <View
       className={cn("bg-border -mx-1 h-px", className)}
       {...props}
     />
@@ -148,27 +155,40 @@ function CommandSeparator({
 
 function CommandItem({
   className,
+  children,
+  onSelect,
+  disabled = false,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+}: Omit<React.ComponentProps<typeof Pressable>, "children"> & {
+  children?: React.ReactNode;
+  onSelect?: () => void;
+  disabled?: boolean;
+}) {
   return (
-    <CommandPrimitive.Item
-      data-slot="command-item"
+    <Pressable
+      disabled={disabled}
+      onPress={onSelect}
       className={cn(
-        "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex flex-row items-center gap-2 rounded-sm px-2 py-2.5",
+        disabled ? "opacity-50" : "active:bg-accent",
+        Platform.select({
+          web: "outline-none select-none hover:bg-accent",
+        }),
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </Pressable>
   );
 }
 
 function CommandShortcut({
   className,
   ...props
-}: React.ComponentProps<"span">) {
+}: React.ComponentProps<typeof Text>) {
   return (
-    <span
-      data-slot="command-shortcut"
+    <Text
       className={cn(
         "text-muted-foreground ml-auto text-xs tracking-widest",
         className,

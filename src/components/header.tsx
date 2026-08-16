@@ -1,6 +1,7 @@
 import { Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { CommandSearch } from "./command-search";
 import { GitHubButton } from "./github-button";
 import { Logo } from "./logo";
 import { MainNav } from "./main-nav";
@@ -33,7 +34,7 @@ export function Header({ className }: HeaderProps) {
           />
           <MainNav className="hidden lg:flex" />
           <View className="ml-auto flex flex-row items-center gap-1.5">
-            {/* <CommandSearch /> TODO: Add command search */}
+            <CommandSearch />
             <GitHubButton />
             <ThemeToggle />
           </View>

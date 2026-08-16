@@ -1,25 +1,37 @@
+import { Platform, View, type ViewProps } from "react-native";
+
+import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
-function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {
+function Kbd({ className, children, ...props }: ViewProps) {
   return (
-    <kbd
-      data-slot="kbd"
+    <View
+      role={Platform.select({ web: "presentation" })}
       className={cn(
-        "bg-muted text-muted-foreground pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm px-1 font-sans text-xs font-medium select-none",
-        "[&_svg:not([class*='size-'])]:size-3",
-        "[[data-slot=tooltip-content]_&]:bg-background/20 [[data-slot=tooltip-content]_&]:text-background dark:[[data-slot=tooltip-content]_&]:bg-background/10",
+        "bg-muted h-5 min-w-5 flex-row items-center justify-center rounded-sm px-1",
+        Platform.select({
+          web: "inline-flex w-fit select-none gap-1",
+        }),
+        "in-data-[slot=tooltip-content]:bg-background/20 dark:in-data-[slot=tooltip-content]:bg-background/10",
         className,
       )}
       {...props}
-    />
+    >
+      {typeof children === "string" || typeof children === "number" ? (
+        <Text className="text-muted-foreground font-sans text-xs font-medium">
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
+    </View>
   );
 }
 
-function KbdGroup({ className, ...props }: React.ComponentProps<"div">) {
+function KbdGroup({ className, ...props }: ViewProps) {
   return (
-    <kbd
-      data-slot="kbd-group"
-      className={cn("inline-flex items-center gap-1", className)}
+    <View
+      className={cn("flex-row items-center gap-1", className)}
       {...props}
     />
   );

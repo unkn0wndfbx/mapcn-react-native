@@ -1,14 +1,8 @@
-"use client";
-
-import {
-  ArrowDown,
-  ArrowUp,
-  CornerDownLeft,
-  FileText,
-  SearchIcon,
-} from "lucide-react-native";
-import { useRouter } from "next/navigation";
+import type { Href } from "expo-router";
+import { useRouter } from "expo-router";
+import { FileText, SearchIcon } from "lucide-react-native";
 import * as React from "react";
+import { Platform, View } from "react-native";
 
 import { Button } from "./ui/button";
 
@@ -20,19 +14,30 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Icon } from "@/components/ui/icon";
 import { Kbd } from "@/components/ui/kbd";
+import { Text } from "@/components/ui/text";
 import { siteNavigation } from "@/lib/site-navigation";
 import { cn } from "@/lib/utils";
 
-export function CommandSearch({ className }: { className?: string }) {
+type CommandSearchProps = {
+  className?: string;
+};
+
+export function CommandSearch({ className }: CommandSearchProps) {
   const [open, setOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
   const router = useRouter();
 
   React.useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setOpen((open) => !open);
+    if (Platform.OS !== "web") {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        setOpen((current) => !current);
       }
     }
 
@@ -42,8 +47,31 @@ export function CommandSearch({ className }: { className?: string }) {
     };
   }, []);
 
-  function handleSelect(href: string) {
-    setOpen(false);
+  const filteredNavigation = React.useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) {
+      return siteNavigation;
+    }
+
+    return siteNavigation
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) =>
+          item.title.toLowerCase().includes(query),
+        ),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [search]);
+
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setSearch("");
+    }
+  }
+
+  function handleSelect(href: Href) {
+    handleOpenChange(false);
     router.push(href);
   }
 
@@ -52,80 +80,97 @@ export function CommandSearch({ className }: { className?: string }) {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => {
+        onPress={() => {
           setOpen(true);
         }}
-        aria-label="Jump to pages, components, and docs"
+        accessibilityLabel="Jump to pages, components, and docs"
         className={cn(
           "bg-muted dark:bg-muted/50 text-muted-foreground hover:bg-muted/60 dark:hover:bg-muted/60 hover:text-foreground mr-2.5 hidden w-48 md:flex",
           className,
         )}
       >
-        <SearchIcon className="size-3.5" />
-        <span>Search...</span>
-        <Kbd className="ml-auto bg-transparent">⌘K</Kbd>
+        <Icon
+          as={SearchIcon}
+          className="text-muted-foreground size-3.5 group-active:text-foreground group-hover:text-foreground"
+        />
+        <Text className="text-muted-foreground group-active:text-foreground group-hover:text-foreground">
+          Search...
+        </Text>
+        {Platform.OS === "web" ? (
+          <Kbd className="ml-auto bg-transparent">⌘K</Kbd>
+        ) : null}
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onPress={() => {
+          setOpen(true);
+        }}
+        accessibilityLabel="Jump to pages, components, and docs"
+        className={cn("md:hidden", className)}
+      >
+        <Icon
+          as={SearchIcon}
+          size={16}
+        />
       </Button>
       <CommandDialog
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         title="Search..."
         description="Jump to pages, components, and docs"
         showCloseButton={false}
       >
         <CommandInput
           placeholder="Search..."
+          value={search}
+          onChangeText={setSearch}
+          autoFocus={Platform.OS === "web"}
           className="h-10 border-none text-sm"
         />
         <CommandList>
-          <CommandEmpty className="text-muted-foreground py-8 text-sm">
-            <div className="flex flex-col items-center gap-1.5">
-              <FileText className="size-5 opacity-40" />
-              <span>No results found</span>
-            </div>
-          </CommandEmpty>
-          {siteNavigation.map((group) => (
-            <CommandGroup
-              key={group.title}
-              heading={group.title}
-            >
-              {group.items.map((item) => (
-                <CommandItem
-                  key={item.href}
-                  value={item.title}
-                  onSelect={() => {
-                    handleSelect(item.href);
-                  }}
-                >
-                  <item.icon />
-                  <span>{item.title}</span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          ))}
+          {filteredNavigation.length === 0 ? (
+            <CommandEmpty className="gap-1.5 py-8">
+              <Icon
+                as={FileText}
+                className="size-5 opacity-40"
+              />
+              <Text className="text-muted-foreground text-sm">
+                No results found
+              </Text>
+            </CommandEmpty>
+          ) : (
+            filteredNavigation.map((group) => (
+              <CommandGroup
+                key={group.title}
+                heading={group.title}
+              >
+                {group.items.map((item) => (
+                  <CommandItem
+                    key={`${group.title}-${item.title}`}
+                    onSelect={() => {
+                      handleSelect(item.href);
+                    }}
+                  >
+                    <Icon
+                      as={item.icon}
+                      className="text-muted-foreground size-4"
+                    />
+                    <Text className="text-sm">{item.title}</Text>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))
+          )}
         </CommandList>
-        <div className="text-muted-foreground/80 flex items-center justify-between border-t p-3 text-xs">
-          <div className="flex items-center gap-2.5">
-            <span className="flex items-center gap-1.5">
-              <Kbd>
-                <ArrowUp className="size-3" />
-              </Kbd>
-              <Kbd>
-                <ArrowDown className="size-3" />
-              </Kbd>
-              <span>navigate</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Kbd>
-                <CornerDownLeft className="size-3" />
-              </Kbd>
-              <span>select</span>
-            </span>
-          </div>
-          <span className="flex items-baseline gap-1.5">
-            <Kbd>esc</Kbd>
-            <span>close</span>
-          </span>
-        </div>
+        {Platform.OS === "web" ? (
+          <View className="border-border flex flex-row items-center justify-end border-t p-3">
+            <View className="flex flex-row items-baseline gap-1.5">
+              <Kbd>esc</Kbd>
+              <Text className="text-muted-foreground/80 text-xs">close</Text>
+            </View>
+          </View>
+        ) : null}
       </CommandDialog>
     </>
   );
