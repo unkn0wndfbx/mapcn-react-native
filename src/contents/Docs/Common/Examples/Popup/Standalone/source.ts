@@ -1,9 +1,9 @@
 export const standalonePopupExampleSource = `import { useState } from "react";
 import { View } from "react-native";
 
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { Map, MapPopup } from "@/components/ui/map";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
+import { Map, MapPopup } from "@/atoms/Map";
 
 export function StandalonePopupExample() {
   const [showPopup, setShowPopup] = useState(true);

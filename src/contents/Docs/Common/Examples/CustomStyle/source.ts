@@ -1,16 +1,16 @@
 export const customStyleExampleSource = `import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/atoms/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Text } from "@/components/ui/text";
-import { Map, useMap } from "@/components/ui/map";
+} from "@/molecules/DropdownMenu";
+import { Text } from "@/atoms/Text";
+import { Map, useMap } from "@/atoms/Map";
 
 const styles = {
   default: undefined,

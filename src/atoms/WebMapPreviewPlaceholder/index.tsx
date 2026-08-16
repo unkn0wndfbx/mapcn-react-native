@@ -12,10 +12,10 @@ import {
 import { AppStoreIcon } from "../AppStoreIcon";
 import { PlayStoreIcon } from "../PlayStoreIcon";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Badge } from "@/atoms/Badge";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/site-metadata";
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";

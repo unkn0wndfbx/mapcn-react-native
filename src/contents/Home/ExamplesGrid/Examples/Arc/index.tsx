@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { ExampleCard } from "@/atoms/ExampleCard";
 import { ExampleMap } from "@/atoms/ExampleMap";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getPreviewImages } from "@/lib/preview-images";
 import {
   MapArc,

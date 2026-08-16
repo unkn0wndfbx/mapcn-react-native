@@ -2,16 +2,16 @@ export const osrmRouteExampleSource = `import { Clock, Route } from "lucide-reac
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapMarker,
   MapRoute,
   MarkerContent,
   MarkerLabel,
-} from "@/components/ui/map";
+} from "@/atoms/Map";
 
 const start = { name: "Amsterdam", lng: 4.9041, lat: 52.3676 };
 const end = { name: "Rotterdam", lng: 4.4777, lat: 51.9244 };

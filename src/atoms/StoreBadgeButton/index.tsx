@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Platform, Pressable, useColorScheme, View } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { openExternalUrl } from "@/lib/link";
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";

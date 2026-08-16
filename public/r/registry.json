@@ -21,7 +21,7 @@
         {
           "path": "src/registry/map.tsx",
           "type": "registry:ui",
-          "target": "components/ui/map.tsx"
+          "target": "atoms/Map/index.tsx"
         }
       ],
       "meta": {
@@ -74,7 +74,10 @@
       "type": "registry:block",
       "title": "Analytics Map",
       "description": "Real-time analytics overview with a world map, breakdown cards, and device stats.",
-      "dependencies": ["react-native-svg", "lucide-react-native"],
+      "dependencies": [
+        "react-native-svg",
+        "lucide-react-native"
+      ],
       "registryDependencies": [
         "unkn0wndfbx/mapcn-react-native/map",
         "https://reactnativereusables.com/r/nativewind/card.json"
@@ -96,17 +99,20 @@
           "target": "app/analytics/chart-geometry.ts"
         },
         {
-          "path": "src/registry/blocks/analytics-map/components/overview-card.tsx",
+          "path": "src/registry/blocks/analytics-map/ui/overview-card.tsx",
           "type": "registry:component",
-          "target": "app/analytics/components/overview-card.tsx"
+          "target": "app/analytics/ui/overview-card.tsx"
         },
         {
-          "path": "src/registry/blocks/analytics-map/components/breakdown-card.tsx",
+          "path": "src/registry/blocks/analytics-map/ui/breakdown-card.tsx",
           "type": "registry:component",
-          "target": "app/analytics/components/breakdown-card.tsx"
+          "target": "app/analytics/ui/breakdown-card.tsx"
         }
       ],
-      "categories": ["analytics", "dashboard"],
+      "categories": [
+        "analytics",
+        "dashboard"
+      ],
       "meta": {
         "iframeHeight": "940px"
       }
@@ -117,7 +123,9 @@
       "title": "Choropleth",
       "description": "World choropleth map shading countries by a metric, with a hover tooltip and legend.",
       "dependencies": [],
-      "registryDependencies": ["unkn0wndfbx/mapcn-react-native/map"],
+      "registryDependencies": [
+        "unkn0wndfbx/mapcn-react-native/map"
+      ],
       "files": [
         {
           "path": "src/registry/blocks/choropleth/page.tsx",
@@ -135,7 +143,10 @@
           "target": "@lib/use-world-data.ts"
         }
       ],
-      "categories": ["visualization", "choropleth"],
+      "categories": [
+        "visualization",
+        "choropleth"
+      ],
       "meta": {
         "iframeHeight": "720px"
       }
@@ -145,7 +156,9 @@
       "type": "registry:block",
       "title": "Analytics Card",
       "description": "Compact analytics card with a headline metric over a world map.",
-      "dependencies": ["lucide-react-native"],
+      "dependencies": [
+        "lucide-react-native"
+      ],
       "registryDependencies": [
         "unkn0wndfbx/mapcn-react-native/map",
         "https://reactnativereusables.com/r/nativewind/card.json",
@@ -163,7 +176,10 @@
           "target": "app/analytics-card/data.ts"
         }
       ],
-      "categories": ["analytics", "card"],
+      "categories": [
+        "analytics",
+        "card"
+      ],
       "meta": {
         "iframeHeight": "600px"
       }
@@ -173,7 +189,9 @@
       "type": "registry:block",
       "title": "Delivery Tracker",
       "description": "Live order tracking with route progress, courier position, and order details.",
-      "dependencies": ["lucide-react-native"],
+      "dependencies": [
+        "lucide-react-native"
+      ],
       "registryDependencies": [
         "unkn0wndfbx/mapcn-react-native/map",
         "https://reactnativereusables.com/r/nativewind/card.json",
@@ -192,7 +210,10 @@
           "target": "app/delivery/data.ts"
         }
       ],
-      "categories": ["tracking", "delivery"],
+      "categories": [
+        "tracking",
+        "delivery"
+      ],
       "meta": {
         "iframeHeight": "720px"
       }
@@ -203,7 +224,9 @@
       "title": "Uptime Monitor",
       "description": "Status-page style map of edge network locations with live health, latency, and uptime.",
       "dependencies": [],
-      "registryDependencies": ["unkn0wndfbx/mapcn-react-native/map"],
+      "registryDependencies": [
+        "unkn0wndfbx/mapcn-react-native/map"
+      ],
       "files": [
         {
           "path": "src/registry/blocks/uptime-monitor/page.tsx",
@@ -216,17 +239,20 @@
           "target": "app/uptime-monitor/data.ts"
         },
         {
-          "path": "src/registry/blocks/uptime-monitor/components/edge-node-marker.tsx",
+          "path": "src/registry/blocks/uptime-monitor/ui/edge-node-marker.tsx",
           "type": "registry:component",
-          "target": "app/uptime-monitor/components/edge-node-marker.tsx"
+          "target": "app/uptime-monitor/ui/edge-node-marker.tsx"
         },
         {
-          "path": "src/registry/blocks/uptime-monitor/components/status-sidebar.tsx",
+          "path": "src/registry/blocks/uptime-monitor/ui/status-sidebar.tsx",
           "type": "registry:component",
-          "target": "app/uptime-monitor/components/status-sidebar.tsx"
+          "target": "app/uptime-monitor/ui/status-sidebar.tsx"
         }
       ],
-      "categories": ["monitoring", "status"],
+      "categories": [
+        "monitoring",
+        "status"
+      ],
       "meta": {
         "iframeHeight": "720px"
       }
@@ -236,7 +262,9 @@
       "type": "registry:block",
       "title": "Heatmap",
       "description": "Globe-projected heatmap visualizing earthquake density with zoom-dependent styling.",
-      "dependencies": ["@maplibre/maplibre-react-native"],
+      "dependencies": [
+        "@maplibre/maplibre-react-native"
+      ],
       "registryDependencies": [
         "unkn0wndfbx/mapcn-react-native/map",
         "https://reactnativereusables.com/r/nativewind/text.json"
@@ -248,7 +276,10 @@
           "target": "app/heatmap/page.tsx"
         }
       ],
-      "categories": ["visualization", "heatmap"],
+      "categories": [
+        "visualization",
+        "heatmap"
+      ],
       "meta": {
         "iframeHeight": "800px"
       }
@@ -258,7 +289,9 @@
       "type": "registry:block",
       "title": "Logistics Network",
       "description": "Domestic logistics map with a sidebar of stats.",
-      "dependencies": ["lucide-react-native"],
+      "dependencies": [
+        "lucide-react-native"
+      ],
       "registryDependencies": [
         "unkn0wndfbx/mapcn-react-native/map",
         "https://reactnativereusables.com/r/nativewind/separator.json",
@@ -276,17 +309,20 @@
           "target": "app/logistics/data.ts"
         },
         {
-          "path": "src/registry/blocks/logistics-network/components/filter-sidebar.tsx",
+          "path": "src/registry/blocks/logistics-network/ui/filter-sidebar.tsx",
           "type": "registry:component",
-          "target": "app/logistics/components/filter-sidebar.tsx"
+          "target": "app/logistics/ui/filter-sidebar.tsx"
         },
         {
-          "path": "src/registry/blocks/logistics-network/components/network-map.tsx",
+          "path": "src/registry/blocks/logistics-network/ui/network-map.tsx",
           "type": "registry:component",
-          "target": "app/logistics/components/network-map.tsx"
+          "target": "app/logistics/ui/network-map.tsx"
         }
       ],
-      "categories": ["logistics", "network"],
+      "categories": [
+        "logistics",
+        "network"
+      ],
       "meta": {
         "iframeHeight": "800px"
       }
@@ -296,7 +332,9 @@
       "type": "registry:block",
       "title": "Store Locator",
       "description": "Searchable store list synced with map markers.",
-      "dependencies": ["lucide-react-native"],
+      "dependencies": [
+        "lucide-react-native"
+      ],
       "registryDependencies": [
         "unkn0wndfbx/mapcn-react-native/map",
         "https://reactnativereusables.com/r/nativewind/input.json",
@@ -314,17 +352,20 @@
           "target": "app/store-locator/data.ts"
         },
         {
-          "path": "src/registry/blocks/store-locator/components/store-list.tsx",
+          "path": "src/registry/blocks/store-locator/ui/store-list.tsx",
           "type": "registry:component",
-          "target": "app/store-locator/components/store-list.tsx"
+          "target": "app/store-locator/ui/store-list.tsx"
         },
         {
-          "path": "src/registry/blocks/store-locator/components/locator-map.tsx",
+          "path": "src/registry/blocks/store-locator/ui/locator-map.tsx",
           "type": "registry:component",
-          "target": "app/store-locator/components/locator-map.tsx"
+          "target": "app/store-locator/ui/locator-map.tsx"
         }
       ],
-      "categories": ["store-locator", "locator"],
+      "categories": [
+        "store-locator",
+        "locator"
+      ],
       "meta": {
         "iframeHeight": "800px"
       }

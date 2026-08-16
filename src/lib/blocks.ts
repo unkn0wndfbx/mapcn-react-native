@@ -26,8 +26,8 @@ const typedRegistry = registry as RegistrySchema;
 // shadcn target placeholders (e.g. "@lib/") resolve to the consumer's aliases
 // at install time. For the docs file tree, show them as friendly folder names.
 const TARGET_PLACEHOLDERS: Record<string, string> = {
-  "@components/": "components/",
-  "@ui/": "components/ui/",
+  "@components/": "molecules/",
+  "@ui/": "atoms/",
   "@lib/": "lib/",
   "@hooks/": "hooks/",
 };

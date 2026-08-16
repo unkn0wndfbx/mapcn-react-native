@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { ComponentPreview } from "@/contents/Docs/Common/ComponentPreview";
 import { ArcExample } from "@/contents/Docs/Common/Examples/Arc";
 import { InteractiveArcExample } from "@/contents/Docs/Common/Examples/Arc/Interactive";

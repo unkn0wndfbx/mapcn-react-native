@@ -8,8 +8,8 @@ import {
   DocsSection,
 } from "../Common/Layout";
 
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 
 const features = [
   {

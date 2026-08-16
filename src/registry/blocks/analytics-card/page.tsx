@@ -3,15 +3,10 @@ import { View } from "react-native";
 
 import { totalVisitors, visitorGrowth, visitorLocations } from "./data";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Badge } from "@/atoms/Badge";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/molecules/Card";
 import { Map, MapGeoJSON, MapMarker, MarkerContent } from "@/registry/map";
 
 const WORLD_GEOJSON =

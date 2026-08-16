@@ -14,11 +14,11 @@ import {
   DocsSection,
 } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getExampleSource } from "@/lib/example-source";
 import { getPreviewImages } from "@/lib/preview-images";
 
-const refCode = `import { Map, type MapRef } from "@/components/ui/map";
+const refCode = `import { Map, type MapRef } from "@/atoms/Map";
 import { useRef } from "react";
 import { View } from "react-native";
 
@@ -39,11 +39,11 @@ function MyMapComponent() {
   );
 }`;
 
-const mapHookCode = `import { Map, useMap } from "@/components/ui/map";
+const mapHookCode = `import { Map, useMap } from "@/atoms/Map";
 import { View } from "react-native";
 
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
 
 function FlyToControl() {
   const { camera, isLoaded } = useMap();

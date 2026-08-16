@@ -4,8 +4,8 @@ import { View } from "react-native";
 
 import { ExampleCard } from "@/atoms/ExampleCard";
 import { ExampleMap } from "@/atoms/ExampleMap";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import { getPreviewImages } from "@/lib/preview-images";
 import { MapMarker, MarkerContent, MarkerPopup } from "@/registry/map";
 

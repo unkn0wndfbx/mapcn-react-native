@@ -5,14 +5,14 @@ import { View } from "react-native";
 
 import { BlockViewerCode, type HighlightedFile } from "../ViewerCode";
 
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Separator } from "@/atoms/Separator";
+import { Text } from "@/atoms/Text";
 import { type FileTree, type RegistryBlockItem } from "@/lib/blocks";
 import { copyText } from "@/lib/clipboard";
 import { trackEvent } from "@/lib/events";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/molecules/Tabs";
 
 interface BlockPreviewProps {
   block: RegistryBlockItem;

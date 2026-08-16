@@ -10,6 +10,7 @@ import {
   type CameraRef,
   type FillLayerSpecification,
   type GeoJSONSourceRef,
+  type GeolocationPosition,
   type LineLayerSpecification,
   type MapRef as NativeMapRef,
   type PressEventWithFeatures,
@@ -19,34 +20,34 @@ import type * as GeoJSON from "geojson";
 import { Locate, Maximize, Minus, Plus, X } from "lucide-react-native";
 import type * as React from "react";
 import {
-  Children,
-  cloneElement,
-  createContext,
-  forwardRef,
-  isValidElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useId,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
+    Children,
+    cloneElement,
+    createContext,
+    forwardRef,
+    isValidElement,
+    useCallback,
+    useContext,
+    useEffect,
+    useId,
+    useImperativeHandle,
+    useMemo,
+    useRef,
+    useState,
+    type ReactNode,
 } from "react";
 import {
-  ActivityIndicator,
-  Animated,
-  Pressable,
-  Text,
-  useColorScheme,
-  View,
-  type NativeSyntheticEvent,
+    ActivityIndicator,
+    Animated,
+    Pressable,
+    Text,
+    useColorScheme,
+    View,
+    type NativeSyntheticEvent,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-import { Icon } from "@/components/ui/icon";
-import { TextClassContext } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { TextClassContext } from "@/atoms/Text";
 import { cn } from "@/lib/utils";
 
 const defaultStyles = {
@@ -945,6 +946,58 @@ const controlPositionClasses = {
   "bottom-right": "bottom-10 right-2",
 };
 
+const LOCATE_PERMISSION_TIMEOUT_MS = 60_000;
+const LOCATE_POSITION_TIMEOUT_MS = 15_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Timed out"));
+    }, ms);
+
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error: unknown) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
+async function waitForCurrentPosition(
+  timeoutMs: number,
+): Promise<{ longitude: number; latitude: number } | undefined> {
+  const cached = await LocationManager.getCurrentPosition();
+  if (cached) {
+    return {
+      longitude: cached.coords.longitude,
+      latitude: cached.coords.latitude,
+    };
+  }
+
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      LocationManager.removeListener(onUpdate);
+      resolve(undefined);
+    }, timeoutMs);
+
+    function onUpdate(position: GeolocationPosition): void {
+      clearTimeout(timer);
+      LocationManager.removeListener(onUpdate);
+      resolve({
+        longitude: position.coords.longitude,
+        latitude: position.coords.latitude,
+      });
+    }
+
+    LocationManager.addListener(onUpdate);
+  });
+}
+
 function ControlGroup({ children }: { children: ReactNode }) {
   return (
     <View className="border-border bg-background overflow-hidden rounded-md border shadow-sm">
@@ -1053,16 +1106,17 @@ function MapControls({
       setIsLocating(true);
 
       try {
-        const hasPermission = await LocationManager.requestPermissions();
+        const hasPermission = await withTimeout(
+          LocationManager.requestPermissions(),
+          LOCATE_PERMISSION_TIMEOUT_MS,
+        );
         if (!hasPermission) return;
 
-        const location = await LocationManager.getCurrentPosition();
-        if (!location) return;
+        const coordinates = await waitForCurrentPosition(
+          LOCATE_POSITION_TIMEOUT_MS,
+        );
+        if (!coordinates) return;
 
-        const coordinates = {
-          longitude: location.coords.longitude,
-          latitude: location.coords.latitude,
-        };
         camera?.flyTo({
           center: [coordinates.longitude, coordinates.latitude],
           duration: 1500,
@@ -1723,40 +1777,41 @@ function MapClusterLayer<
 }
 
 export {
-  DefaultMarkerIcon,
-  Map,
-  MapArc,
-  MapClusterLayer,
-  MapControls,
-  MapGeoJSON,
-  MapMarker,
-  MapPopup,
-  MapRoute,
-  MarkerContent,
-  MarkerLabel,
-  MarkerPopup,
-  MarkerTooltip,
-  useMap,
+    DefaultMarkerIcon,
+    Map,
+    MapArc,
+    MapClusterLayer,
+    MapControls,
+    MapGeoJSON,
+    MapMarker,
+    MapPopup,
+    MapRoute,
+    MarkerContent,
+    MarkerLabel,
+    MarkerPopup,
+    MarkerTooltip,
+    useMap
 };
 export type {
-  MapArcDatum,
-  MapArcEvent,
-  MapArcProps,
-  MapClusterLayerProps,
-  MapControlsProps,
-  MapGeoJSONData,
-  MapGeoJSONEvent,
-  MapGeoJSONFeature,
-  MapGeoJSONProps,
-  MapMarkerProps,
-  MapPopupProps,
-  MapProps,
-  MapRef,
-  MapRouteProps,
-  MapStyleOption,
-  MapViewport,
-  MarkerContentProps,
-  MarkerLabelProps,
-  MarkerPopupProps,
-  MarkerTooltipProps,
+    MapArcDatum,
+    MapArcEvent,
+    MapArcProps,
+    MapClusterLayerProps,
+    MapControlsProps,
+    MapGeoJSONData,
+    MapGeoJSONEvent,
+    MapGeoJSONFeature,
+    MapGeoJSONProps,
+    MapMarkerProps,
+    MapPopupProps,
+    MapProps,
+    MapRef,
+    MapRouteProps,
+    MapStyleOption,
+    MapViewport,
+    MarkerContentProps,
+    MarkerLabelProps,
+    MarkerPopupProps,
+    MarkerTooltipProps
 };
+

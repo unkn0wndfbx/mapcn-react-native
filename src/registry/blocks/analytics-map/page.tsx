@@ -1,16 +1,16 @@
 import { View } from "react-native";
 
-import { BreakdownCard } from "./components/breakdown-card";
-import { OverviewCard } from "./components/overview-card";
 import {
-  locations,
-  visitedPagesRows,
-  countriesRows,
-  referrersRows,
   browsersRows,
+  countriesRows,
+  locations,
+  referrersRows,
+  visitedPagesRows,
 } from "./data";
+import { BreakdownCard } from "./ui/breakdown-card";
+import { OverviewCard } from "./ui/overview-card";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapControls,

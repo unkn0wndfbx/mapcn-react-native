@@ -10,13 +10,13 @@ import {
   DocsSection,
 } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getPreviewImages } from "@/lib/preview-images";
 import { Map, MapControls } from "@/registry/map";
 
 const usagePreview = getPreviewImages("installation");
 
-const usageCode = `import { Map, MapControls } from "@/components/ui/map";
+const usageCode = `import { Map, MapControls } from "@/atoms/Map";
 import { View } from "react-native";
 
 export function MyMap() {

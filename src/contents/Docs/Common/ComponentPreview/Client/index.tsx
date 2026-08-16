@@ -3,8 +3,8 @@ import { View } from "react-native";
 
 import { CodeBlock } from "../../CodeBlock";
 
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
 import { useLockParentScrollOnMapTouch } from "@/lib/parent-scroll-lock";
 import { cn } from "@/lib/utils";
 

@@ -1,9 +1,9 @@
 import { Check } from "lucide-react-native";
 import { useCallback, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import { copyText } from "@/lib/clipboard";
 import { trackEvent } from "@/lib/events";
 import { mapInstallAgentPrompt } from "@/lib/llm-prompts";

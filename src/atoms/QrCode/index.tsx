@@ -2,8 +2,8 @@ import { Image } from "expo-image";
 import { Smartphone } from "lucide-react-native";
 import { Platform, Pressable, View } from "react-native";
 
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import { openExternalUrl } from "@/lib/link";
 import { cn } from "@/lib/utils";
 

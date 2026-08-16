@@ -1,9 +1,9 @@
 import { Stack } from "expo-router";
 import { Platform, View } from "react-native";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DocsSidebar } from "@/contents/Docs/Common/Sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { SidebarInset, SidebarProvider } from "@/organisms/Sidebar";
 
 function DocsStack() {
   return (

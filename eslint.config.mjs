@@ -144,8 +144,9 @@ export default tseslint.config(
   },
   {
     files: [
-      "**/components/**/*.{js,jsx,ts,tsx}",
       "**/atoms/**/*.{js,jsx,ts,tsx}",
+      "**/molecules/**/*.{js,jsx,ts,tsx}",
+      "**/organisms/**/*.{js,jsx,ts,tsx}",
       "**/screens/**/*.{js,jsx,ts,tsx}",
       "**/contents/**/*.{js,jsx,ts,tsx}",
       "**/hooks/**/*.{js,jsx,ts,tsx}",

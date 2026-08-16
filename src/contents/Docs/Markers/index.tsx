@@ -3,14 +3,14 @@ import { DraggableMarkerExample } from "../Common/Examples/DraggableMarker";
 import { MarkersExample } from "../Common/Examples/Markers";
 import { PopupExample } from "../Common/Examples/Popup";
 import {
-  DocsCode,
-  DocsLayout,
-  DocsLink,
-  DocsNote,
-  DocsSection,
+    DocsCode,
+    DocsLayout,
+    DocsLink,
+    DocsNote,
+    DocsSection,
 } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getExampleSource } from "@/lib/example-source";
 import { getPreviewImages } from "@/lib/preview-images";
 

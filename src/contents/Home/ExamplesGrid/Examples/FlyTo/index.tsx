@@ -3,8 +3,8 @@ import { View } from "react-native";
 
 import { ExampleCard } from "@/atoms/ExampleCard";
 import { ExampleMap } from "@/atoms/ExampleMap";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
 import { getPreviewImages } from "@/lib/preview-images";
 import { MapMarker, MarkerContent, useMap } from "@/registry/map";
 

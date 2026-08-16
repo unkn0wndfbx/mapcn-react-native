@@ -1,7 +1,7 @@
 export const interactiveArcExampleSource = `import { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapArc,
@@ -10,7 +10,7 @@ import {
   MarkerContent,
   MarkerLabel,
   type MapArcDatum,
-} from "@/components/ui/map";
+} from "@/atoms/Map";
 
 type Lane = MapArcDatum & {
   origin: string;

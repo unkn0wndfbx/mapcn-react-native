@@ -1,6 +1,9 @@
 import { Link, usePathname, type Href } from "expo-router";
 import { Platform } from "react-native";
 
+import { Text } from "@/atoms/Text";
+import { docsNavigation } from "@/lib/site-navigation";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -11,10 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Text } from "@/components/ui/text";
-import { docsNavigation } from "@/lib/site-navigation";
-import { cn } from "@/lib/utils";
+} from "@/organisms/Sidebar";
 
 export function DocsSidebar() {
   const pathname = usePathname();

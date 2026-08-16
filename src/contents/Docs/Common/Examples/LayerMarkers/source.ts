@@ -6,8 +6,8 @@ export const layerMarkersExampleSource = `import {
 import { useId, useState } from "react";
 import { View, type NativeSyntheticEvent } from "react-native";
 
-import { Text } from "@/components/ui/text";
-import { Map, MapPopup } from "@/components/ui/map";
+import { Text } from "@/atoms/Text";
+import { Map, MapPopup } from "@/atoms/Map";
 
 function generateRandomPoints(count: number) {
   const center = { lng: -73.98, lat: 40.75 };

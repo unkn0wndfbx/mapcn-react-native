@@ -4,8 +4,8 @@ import { View } from "react-native";
 import { CodeBlock } from "../../CodeBlock";
 
 import { WebMapPreviewPlaceholder } from "@/atoms/WebMapPreviewPlaceholder";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
 import { cn } from "@/lib/utils";
 
 interface ComponentPreviewClientProps {

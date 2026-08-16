@@ -1,5 +1,5 @@
-import { LlmMarkdownView } from "@/components/llm-markdown-view";
 import { createLlmIndexMarkdown } from "@/lib/llm-content";
+import { LlmMarkdownView } from "@/molecules/LlmMarkdownView";
 
 export default function LlmIndexScreen() {
   const markdown = createLlmIndexMarkdown();

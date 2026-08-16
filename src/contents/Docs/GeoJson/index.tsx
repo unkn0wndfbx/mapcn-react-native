@@ -3,7 +3,7 @@ import { GeoJSONExample } from "../Common/Examples/GeoJson";
 import { MapOverlayExample } from "../Common/Examples/MapOverlay";
 import { DocsCode, DocsLayout, DocsSection } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getExampleSource } from "@/lib/example-source";
 import { getPreviewImages } from "@/lib/preview-images";
 

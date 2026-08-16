@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 
 import { useDocsScroll } from "../docs-scroll-context";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { cn } from "@/lib/utils";
 
 interface TocItem {

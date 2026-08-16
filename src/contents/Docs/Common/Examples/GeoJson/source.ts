@@ -1,7 +1,7 @@
 export const geojsonExampleSource = `import { View } from "react-native";
 
 import { WORLD_GEOJSON } from "@/lib/use-world-data";
-import { Map, MapGeoJSON } from "@/components/ui/map";
+import { Map, MapGeoJSON } from "@/atoms/Map";
 
 export function GeoJSONExample() {
   return (

@@ -2,7 +2,7 @@ import { ComponentPreview } from "../Common/ComponentPreview";
 import { ClusterExample } from "../Common/Examples/Cluster";
 import { DocsCode, DocsLayout, DocsSection } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getExampleSource } from "@/lib/example-source";
 import { getPreviewImages } from "@/lib/preview-images";
 

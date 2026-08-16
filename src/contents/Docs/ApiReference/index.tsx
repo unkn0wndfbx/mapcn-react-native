@@ -23,7 +23,7 @@ import {
   markerTooltipProps,
 } from "./props";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 
 const anatomyCode = `<Map>
   <MapMarker longitude={...} latitude={...}>

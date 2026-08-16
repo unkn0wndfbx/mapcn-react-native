@@ -116,10 +116,10 @@ Run:
 ${mapInstallCommand}
 \`\`\`
 
-Then import from ${code("@/components/ui/map")}:
+Then import from ${code("@/atoms/Map")}:
 
 \`\`\`tsx
-import { Map, MapControls } from "@/components/ui/map";
+import { Map, MapControls } from "@/atoms/Map";
 import { View } from "react-native";
 
 export function MyMap() {
@@ -137,7 +137,7 @@ ${createBasemapMarkdown()}
 
 ## Components
 
-Install once with ${code(mapInstallCommand)}, then import these APIs from ${code("@/components/ui/map")}:
+Install once with ${code(mapInstallCommand)}, then import these APIs from ${code("@/atoms/Map")}:
 
 ${components.map((item) => `- [${item.title}](${item.href}) - ${item.description}`).join("\n")}
 

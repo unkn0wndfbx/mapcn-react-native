@@ -5,12 +5,12 @@ import { Platform, useColorScheme, View } from "react-native";
 import { Phone } from "./Phone";
 
 import { AppStoreIcon } from "@/atoms/AppStoreIcon";
+import { Badge } from "@/atoms/Badge";
+import { Icon } from "@/atoms/Icon";
 import { PlayStoreIcon } from "@/atoms/PlayStoreIcon";
 import { QrCode } from "@/atoms/QrCode";
 import { StoreBadgeButton } from "@/atoms/StoreBadgeButton";
-import { Badge } from "@/components/ui/badge";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getPreviewImages } from "@/lib/preview-images";
 import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/site-metadata";
 import { THEME } from "@/lib/theme";

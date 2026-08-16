@@ -1,14 +1,14 @@
 export const markersExampleSource = `import { useState } from "react";
 import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapMarker,
   MarkerContent,
   MarkerPopup,
   MarkerTooltip,
-} from "@/components/ui/map";
+} from "@/atoms/Map";
 
 const locations = [
   {

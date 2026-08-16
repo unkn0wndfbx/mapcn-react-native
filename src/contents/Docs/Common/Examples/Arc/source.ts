@@ -1,13 +1,13 @@
 export const arcExampleSource = `import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapArc,
   MapMarker,
   MarkerContent,
   MarkerLabel,
-} from "@/components/ui/map";
+} from "@/atoms/Map";
 
 const hub = { name: "London", lng: -0.1276, lat: 51.5074 };
 

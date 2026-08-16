@@ -5,17 +5,17 @@ import { Platform, ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import { ExamplesGrid } from "./ExamplesGrid";
 import { GetTheApp } from "./GetTheApp";
 
-import { Footer } from "@/components/footer";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
+import { AgentPrompt } from "@/contents/Home/AgentPrompt";
+import { ParentScrollLockProvider } from "@/lib/parent-scroll-lock";
+import { Footer } from "@/organisms/Footer";
 import {
   PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { AgentPrompt } from "@/contents/Home/AgentPrompt";
-import { ParentScrollLockProvider } from "@/lib/parent-scroll-lock";
+} from "@/organisms/PageHeader";
 
 export const HomePage = () => {
   const [scrollEnabled, setScrollEnabled] = useState(true);

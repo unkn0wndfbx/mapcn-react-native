@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
-import { EdgeNodeMarker } from "./components/edge-node-marker";
-import { StatusSidebar } from "./components/status-sidebar";
 import { edgeNodes, mapView, WORLD_GEOJSON } from "./data";
+import { EdgeNodeMarker } from "./ui/edge-node-marker";
+import { StatusSidebar } from "./ui/status-sidebar";
 
 import { Map, MapControls, MapGeoJSON } from "@/registry/map";
 

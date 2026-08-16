@@ -2,13 +2,13 @@ import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 
 import { BlockDisplay } from "./Display";
 
-import { Footer } from "@/components/footer";
+import { getAllBlocks } from "@/lib/blocks";
+import { Footer } from "@/organisms/Footer";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header";
-import { getAllBlocks } from "@/lib/blocks";
+} from "@/organisms/PageHeader";
 
 export function BlocksPage() {
   const blocks = getAllBlocks();

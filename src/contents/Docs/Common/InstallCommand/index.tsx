@@ -2,12 +2,12 @@ import { Check, Copy } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Text } from "@/components/ui/text";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import { copyText } from "@/lib/clipboard";
 import { trackEvent } from "@/lib/events";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/molecules/Tabs";
 
 interface InstallCommandProps {
   name: string;

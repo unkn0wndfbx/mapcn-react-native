@@ -2,7 +2,7 @@ import { GeoJSONSource, Layer } from "@maplibre/maplibre-react-native";
 import { useId } from "react";
 import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { Map } from "@/registry/map";
 
 const EARTHQUAKE_GEOJSON_URL =

@@ -1,11 +1,11 @@
 import { PropsWithChildren } from "react";
 import { ScrollView, View } from "react-native";
 
-import { Footer } from "@/components/footer";
-import { PageHead } from "@/components/page-head";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { openExternalUrl } from "@/lib/link";
 import { SITE_GITHUB_REPO, SITE_NAME } from "@/lib/site-metadata";
+import { PageHead } from "@/molecules/PageHead";
+import { Footer } from "@/organisms/Footer";
 
 const EFFECTIVE_DATE = "August 8, 2026";
 const APP_NAME = "mapcn-react-native";

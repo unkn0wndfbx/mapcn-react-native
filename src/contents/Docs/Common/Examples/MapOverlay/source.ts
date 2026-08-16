@@ -1,6 +1,6 @@
 export const mapOverlayExampleSource = `import { View } from "react-native";
 
-import { Map, MapGeoJSON } from "@/components/ui/map";
+import { Map, MapGeoJSON } from "@/atoms/Map";
 
 const area: GeoJSON.FeatureCollection = {
   type: "FeatureCollection",

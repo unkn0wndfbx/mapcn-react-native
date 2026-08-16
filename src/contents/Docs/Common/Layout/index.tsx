@@ -14,10 +14,14 @@ import {
 import { DocsScrollProvider, useDocsScroll } from "./docs-scroll-context";
 import { DocsToc } from "./DocsToc";
 
-import { PageHead } from "@/components/page-head";
-import { PrivacyPolicyLink } from "@/components/privacy-policy-link";
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { PrivacyPolicyLink } from "@/atoms/PrivacyPolicyLink";
+import { Text } from "@/atoms/Text";
+import { openExternalUrl } from "@/lib/link";
+import { ParentScrollLockProvider } from "@/lib/parent-scroll-lock";
+import { cn } from "@/lib/utils";
+import { PageHead } from "@/molecules/PageHead";
 import {
   Table,
   TableBody,
@@ -25,11 +29,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Text } from "@/components/ui/text";
-import { openExternalUrl } from "@/lib/link";
-import { ParentScrollLockProvider } from "@/lib/parent-scroll-lock";
-import { cn } from "@/lib/utils";
+} from "@/molecules/Table";
 
 export function slugify(text: string): string {
   return text

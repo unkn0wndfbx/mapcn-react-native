@@ -3,7 +3,7 @@ import { RouteExample } from "../Common/Examples/Route";
 import { OsrmRouteExample } from "../Common/Examples/Route/Osrm";
 import { DocsCode, DocsLayout, DocsLink, DocsSection } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { getExampleSource } from "@/lib/example-source";
 import { getPreviewImages } from "@/lib/preview-images";
 

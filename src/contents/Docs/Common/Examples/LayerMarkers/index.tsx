@@ -6,7 +6,7 @@ import {
 import { useId, useState } from "react";
 import { View, type NativeSyntheticEvent } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import { Map, MapPopup } from "@/registry/map";
 
 function generateRandomPoints(count: number) {

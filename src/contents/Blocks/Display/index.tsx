@@ -48,7 +48,7 @@ export function BlockDisplay({ name }: BlockDisplayProps) {
     const registryFile = registryItem.files?.find((f) => f.path === file.path);
     const content = (registryFile?.content ?? "").replace(
       /@\/registry\/map/g,
-      "@/components/ui/map",
+      "@/atoms/Map",
     );
 
     return {
