@@ -21,7 +21,7 @@
         {
           "path": "src/registry/map.tsx",
           "type": "registry:ui",
-          "target": "components/ui/map.tsx"
+          "target": "atoms/Map/index.tsx"
         }
       ],
       "meta": {
@@ -96,14 +96,14 @@
           "target": "app/analytics/chart-geometry.ts"
         },
         {
-          "path": "src/registry/blocks/analytics-map/components/overview-card.tsx",
+          "path": "src/registry/blocks/analytics-map/ui/overview-card.tsx",
           "type": "registry:component",
-          "target": "app/analytics/components/overview-card.tsx"
+          "target": "app/analytics/ui/overview-card.tsx"
         },
         {
-          "path": "src/registry/blocks/analytics-map/components/breakdown-card.tsx",
+          "path": "src/registry/blocks/analytics-map/ui/breakdown-card.tsx",
           "type": "registry:component",
-          "target": "app/analytics/components/breakdown-card.tsx"
+          "target": "app/analytics/ui/breakdown-card.tsx"
         }
       ],
       "categories": ["analytics", "dashboard"],
@@ -130,9 +130,14 @@
           "target": "app/choropleth/data.ts"
         },
         {
-          "path": "src/lib/use-world-data.ts",
+          "path": "src/lib/Data/WorldGeoJson/index.ts",
           "type": "registry:lib",
-          "target": "@lib/use-world-data.ts"
+          "target": "@lib/Data/WorldGeoJson.ts"
+        },
+        {
+          "path": "src/hooks/WorldData/index.ts",
+          "type": "registry:lib",
+          "target": "@hooks/WorldData.ts"
         }
       ],
       "categories": ["visualization", "choropleth"],
@@ -216,14 +221,14 @@
           "target": "app/uptime-monitor/data.ts"
         },
         {
-          "path": "src/registry/blocks/uptime-monitor/components/edge-node-marker.tsx",
+          "path": "src/registry/blocks/uptime-monitor/ui/edge-node-marker.tsx",
           "type": "registry:component",
-          "target": "app/uptime-monitor/components/edge-node-marker.tsx"
+          "target": "app/uptime-monitor/ui/edge-node-marker.tsx"
         },
         {
-          "path": "src/registry/blocks/uptime-monitor/components/status-sidebar.tsx",
+          "path": "src/registry/blocks/uptime-monitor/ui/status-sidebar.tsx",
           "type": "registry:component",
-          "target": "app/uptime-monitor/components/status-sidebar.tsx"
+          "target": "app/uptime-monitor/ui/status-sidebar.tsx"
         }
       ],
       "categories": ["monitoring", "status"],
@@ -276,14 +281,14 @@
           "target": "app/logistics/data.ts"
         },
         {
-          "path": "src/registry/blocks/logistics-network/components/filter-sidebar.tsx",
+          "path": "src/registry/blocks/logistics-network/ui/filter-sidebar.tsx",
           "type": "registry:component",
-          "target": "app/logistics/components/filter-sidebar.tsx"
+          "target": "app/logistics/ui/filter-sidebar.tsx"
         },
         {
-          "path": "src/registry/blocks/logistics-network/components/network-map.tsx",
+          "path": "src/registry/blocks/logistics-network/ui/network-map.tsx",
           "type": "registry:component",
-          "target": "app/logistics/components/network-map.tsx"
+          "target": "app/logistics/ui/network-map.tsx"
         }
       ],
       "categories": ["logistics", "network"],
@@ -314,14 +319,14 @@
           "target": "app/store-locator/data.ts"
         },
         {
-          "path": "src/registry/blocks/store-locator/components/store-list.tsx",
+          "path": "src/registry/blocks/store-locator/ui/store-list.tsx",
           "type": "registry:component",
-          "target": "app/store-locator/components/store-list.tsx"
+          "target": "app/store-locator/ui/store-list.tsx"
         },
         {
-          "path": "src/registry/blocks/store-locator/components/locator-map.tsx",
+          "path": "src/registry/blocks/store-locator/ui/locator-map.tsx",
           "type": "registry:component",
-          "target": "app/store-locator/components/locator-map.tsx"
+          "target": "app/store-locator/ui/locator-map.tsx"
         }
       ],
       "categories": ["store-locator", "locator"],

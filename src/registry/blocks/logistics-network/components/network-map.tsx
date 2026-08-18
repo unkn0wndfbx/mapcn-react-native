@@ -2,22 +2,22 @@ import { useMemo } from "react";
 import { View } from "react-native";
 
 import {
-  modeConfig,
-  regionLabels,
-  statusConfig,
-  type Hub,
-  type Route,
+    modeConfig,
+    regionLabels,
+    statusConfig,
+    type Hub,
+    type Route,
 } from "../data";
 
-import { Separator } from "@/components/ui/separator";
-import { Text } from "@/components/ui/text";
+import { Separator } from "@/atoms/Separator";
+import { Text } from "@/atoms/Text";
 import {
-  Map,
-  MapArc,
-  MapControls,
-  MapMarker,
-  MarkerContent,
-  MarkerTooltip,
+    Map,
+    MapArc,
+    MapControls,
+    MapMarker,
+    MarkerContent,
+    MarkerTooltip,
 } from "@/registry/map";
 
 interface NetworkMapProps {

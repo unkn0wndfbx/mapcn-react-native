@@ -1,17 +1,20 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { StandalonePopupExample } from "../Common/Examples/Popup/Standalone";
-import { DocsCode, DocsLayout, DocsNote, DocsSection } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Text } from "@/atoms/Text";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function PopupsPage() {
   const standalonePopupPreview = getPreviewImages("standalone-popup");
   const popupSource = getExampleSource("standalone-popup-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Standalone Popups"
       description="Display popups anywhere on the map without markers."
       prev={{ title: "Markers", href: "/docs/markers" }}
@@ -43,6 +46,6 @@ export function PopupsPage() {
           <StandalonePopupExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

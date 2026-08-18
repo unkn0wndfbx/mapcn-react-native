@@ -1,14 +1,12 @@
-import { Text } from "@/components/ui/text";
-import { ComponentPreview } from "@/contents/Docs/Common/ComponentPreview";
+import { Text } from "@/atoms/Text";
 import { ArcExample } from "@/contents/Docs/Common/Examples/Arc";
 import { InteractiveArcExample } from "@/contents/Docs/Common/Examples/Arc/Interactive";
-import {
-  DocsCode,
-  DocsLayout,
-  DocsSection,
-} from "@/contents/Docs/Common/Layout";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function ArcsPage() {
   const arcPreview = getPreviewImages("arc");
@@ -17,7 +15,7 @@ export function ArcsPage() {
   const interactiveArcSource = getExampleSource("interactive-arc-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Arcs"
       description="Draw curved connections between two coordinates with press selection support."
       prev={{ title: "Routes", href: "/docs/routes" }}
@@ -69,6 +67,6 @@ export function ArcsPage() {
           <InteractiveArcExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

@@ -1,22 +1,20 @@
 import { View } from "react-native";
 
-import { CodeBlock } from "../Common/CodeBlock";
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { AdvancedUsageExample } from "../Common/Examples/AdvancedUsage";
 import { CustomLayerExample } from "../Common/Examples/CustomLayer";
 import { LayerMarkersExample } from "../Common/Examples/LayerMarkers";
-import {
-  DocsCode,
-  DocsLayout,
-  DocsLink,
-  DocsListItem,
-  DocsNote,
-  DocsSection,
-} from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Text } from "@/atoms/Text";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { CodeBlock } from "@/molecules/CodeBlock";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsListItem } from "@/molecules/DocsListItem";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 const refCode = `import { Map, type MapRef } from "@/components/ui/map";
 import { useRef } from "react";
@@ -85,7 +83,7 @@ export function AdvancedUsagePage() {
   const layerMarkersSource = getExampleSource("layer-markers-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Advanced"
       description="Access the underlying MapLibre React Native instance for advanced customization."
       prev={{ title: "Clusters", href: "/docs/clusters" }}
@@ -223,6 +221,6 @@ export function AdvancedUsagePage() {
           </DocsListItem>
         </View>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

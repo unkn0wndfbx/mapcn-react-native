@@ -1,11 +1,11 @@
 import { Bike } from "lucide-react-native";
 import { View } from "react-native";
 
-import { ExampleCard } from "@/atoms/ExampleCard";
-import { ExampleMap } from "@/atoms/ExampleMap";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ExampleCard } from "@/molecules/ExampleCard";
+import { ExampleMap } from "@/molecules/ExampleMap";
 import { MapMarker, MapRoute, MarkerContent } from "@/registry/map";
 
 const trailPreview = getPreviewImages("home-trail");

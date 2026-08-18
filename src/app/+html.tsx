@@ -11,7 +11,7 @@ import {
   SITE_TITLE,
   SITE_TWITTER_CREATOR,
   SITE_URL,
-} from "@/lib/site-metadata";
+} from "@/lib/Config/SiteMetadata";
 
 export default function Root({ children }: PropsWithChildren) {
   return (

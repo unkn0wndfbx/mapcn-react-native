@@ -12,13 +12,13 @@ import {
 import { AppStoreIcon } from "../AppStoreIcon";
 import { PlayStoreIcon } from "../PlayStoreIcon";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
-import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/site-metadata";
-import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/atoms/Badge";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/Config/SiteMetadata";
+import { THEME } from "@/lib/Config/Theme";
+import { cn } from "@/lib/Utils/Cn";
 
 const DEFAULT_PHONE_ASPECT_RATIO = 9 / 19.5;
 

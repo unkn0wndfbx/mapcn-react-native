@@ -20,11 +20,11 @@ import {
   type OsrmRouteData,
 } from "./data";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Badge } from "@/atoms/Badge";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { Card, CardContent, CardHeader, CardTitle } from "@/molecules/Card";
 import { Map, MapMarker, MapRoute, MarkerContent } from "@/registry/map";
 
 function formatDistance(meters?: number) {

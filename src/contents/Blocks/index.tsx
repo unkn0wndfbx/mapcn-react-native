@@ -1,35 +1,32 @@
-import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
-import { BlockDisplay } from "./Display";
-
-import { Footer } from "@/components/footer";
+import { getAllBlocks } from "@/lib/Registry/Blocks";
+import { BlockDisplay } from "@/organisms/BlockDisplay";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header";
-import { getAllBlocks } from "@/lib/blocks";
+} from "@/organisms/PageHeader";
+import { ScrollPageLayout } from "@/templates/ScrollPageLayout";
 
 export function BlocksPage() {
   const blocks = getAllBlocks();
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentContainerClassName="flex-grow"
-      showsVerticalScrollIndicator={false}
+    <ScrollPageLayout
+      header={
+        <PageHeader
+          align="left"
+          size="sm"
+        >
+          <PageHeaderHeading>Blocks</PageHeaderHeading>
+          <PageHeaderDescription>
+            Pre-built, ready-to-use map blocks. Browse, preview, and copy them
+            into your app with one command.
+          </PageHeaderDescription>
+        </PageHeader>
+      }
     >
-      <PageHeader
-        align="left"
-        size="sm"
-      >
-        <PageHeaderHeading>Blocks</PageHeaderHeading>
-        <PageHeaderDescription>
-          Pre-built, ready-to-use map blocks. Browse, preview, and copy them
-          into your app with one command.
-        </PageHeaderDescription>
-      </PageHeader>
-
       <View
         className="animate-fade-up animate-stagger container gap-20 pb-20"
         style={
@@ -45,8 +42,6 @@ export function BlocksPage() {
           />
         ))}
       </View>
-
-      <Footer />
-    </ScrollView>
+    </ScrollPageLayout>
   );
 }

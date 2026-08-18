@@ -1,18 +1,16 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { DraggableMarkerExample } from "../Common/Examples/DraggableMarker";
 import { MarkersExample } from "../Common/Examples/Markers";
 import { PopupExample } from "../Common/Examples/Popup";
-import {
-  DocsCode,
-  DocsLayout,
-  DocsLink,
-  DocsNote,
-  DocsSection,
-} from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Text } from "@/atoms/Text";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsNote } from "@/molecules/DocsNote";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function MarkersPage() {
   const markersPreview = getPreviewImages("markers");
@@ -25,7 +23,7 @@ export function MarkersPage() {
   );
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Markers"
       description="Add interactive markers to your map with popups and tooltips."
       prev={{ title: "Controls", href: "/docs/controls" }}
@@ -101,6 +99,6 @@ export function MarkersPage() {
           <DraggableMarkerExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

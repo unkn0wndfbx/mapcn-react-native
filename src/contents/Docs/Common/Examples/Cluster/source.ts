@@ -1,8 +1,8 @@
 export const clusterExampleSource = `import { useState } from "react";
 import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
-import { Map, MapClusterLayer, MapControls, MapPopup } from "@/components/ui/map";
+import { Text } from "@/atoms/Text";
+import { Map, MapClusterLayer, MapControls, MapPopup } from "@/atoms/Map";
 
 interface EarthquakeProperties {
   mag: number;

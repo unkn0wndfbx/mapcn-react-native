@@ -9,7 +9,7 @@ import {
   TrailExample,
 } from "./Examples";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils/Cn";
 
 export function ExamplesGrid() {
   return (

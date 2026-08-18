@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Text } from "@/components/ui/text";
+} from "@/molecules/DropdownMenu";
 import { Map, useMap } from "@/registry/map";
 
 const styles = {

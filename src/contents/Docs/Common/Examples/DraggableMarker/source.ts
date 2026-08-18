@@ -2,14 +2,14 @@ export const draggableMarkerExampleSource = `import { MapPin } from "lucide-reac
 import { useState } from "react";
 import { View } from "react-native";
 
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapMarker,
   MarkerContent,
   MarkerPopup,
-} from "@/components/ui/map";
+} from "@/atoms/Map";
 
 export function DraggableMarkerExample() {
   const [draggableMarker, setDraggableMarker] = useState({

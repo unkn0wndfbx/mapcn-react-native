@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { View } from "react-native";
 
-import { ExampleCard } from "@/atoms/ExampleCard";
-import { ExampleMap } from "@/atoms/ExampleMap";
-import { Text } from "@/components/ui/text";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Text } from "@/atoms/Text";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ExampleCard } from "@/molecules/ExampleCard";
+import { ExampleMap } from "@/molecules/ExampleMap";
 import {
   MapArc,
   MapMarker,

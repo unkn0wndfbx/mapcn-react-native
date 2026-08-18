@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { LocatorMap } from "./components/locator-map";
-import { StoreList } from "./components/store-list";
 import { MAP_CENTER, stores } from "./data";
+import { LocatorMap } from "./ui/locator-map";
+import { StoreList } from "./ui/store-list";
 
 export default function Page() {
   const [query, setQuery] = useState("");

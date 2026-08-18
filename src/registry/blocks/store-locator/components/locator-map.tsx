@@ -4,17 +4,17 @@ import { View } from "react-native";
 
 import type { Store } from "../data";
 
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { cn } from "@/lib/Utils/Cn";
 import {
-  Map,
-  MapControls,
-  MapMarker,
-  MapPopup,
-  MarkerContent,
-  MarkerTooltip,
-  useMap,
+    Map,
+    MapControls,
+    MapMarker,
+    MapPopup,
+    MarkerContent,
+    MarkerTooltip,
+    useMap,
 } from "@/registry/map";
 
 interface LocatorMapProps {

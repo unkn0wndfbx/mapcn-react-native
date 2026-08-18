@@ -1,6 +1,6 @@
 export const basicMapExampleSource = `import { View } from "react-native";
 
-import { Map } from "@/components/ui/map";
+import { Map } from "@/atoms/Map";
 
 export function BasicMapExample() {
   return (

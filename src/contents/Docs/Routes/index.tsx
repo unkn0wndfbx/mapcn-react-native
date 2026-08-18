@@ -1,11 +1,14 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { RouteExample } from "../Common/Examples/Route";
 import { OsrmRouteExample } from "../Common/Examples/Route/Osrm";
-import { DocsCode, DocsLayout, DocsLink, DocsSection } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Text } from "@/atoms/Text";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function RoutesPage() {
   const routePreview = getPreviewImages("route");
@@ -14,7 +17,7 @@ export function RoutesPage() {
   const osrmRouteSource = getExampleSource("osrm-route-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Routes"
       description="Draw lines and paths connecting coordinates on the map."
       prev={{ title: "Popups", href: "/docs/popups" }}
@@ -66,6 +69,6 @@ export function RoutesPage() {
           <OsrmRouteExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

@@ -3,7 +3,6 @@ import { Geist_500Medium } from "@expo-google-fonts/geist/500Medium";
 import { Geist_600SemiBold } from "@expo-google-fonts/geist/600SemiBold";
 import { Geist_700Bold } from "@expo-google-fonts/geist/700Bold";
 import { useFonts } from "@expo-google-fonts/geist/useFonts";
-import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import * as SplashScreen from "expo-splash-screen";
@@ -12,14 +11,14 @@ import { useEffect } from "react";
 import { Platform, useColorScheme, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Header } from "@/components/header";
-import "@/lib/appearance-polyfill";
-import { NAV_THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import "@/lib/Polyfills/Appearance";
+import { NAV_THEME } from "@/lib/Config/Theme";
+import { cn } from "@/lib/Utils/Cn";
+import { AppShell, ErrorBoundary } from "@/templates/AppShell";
 
 void SplashScreen.preventAutoHideAsync();
 
-export { ErrorBoundary } from "@/contents/ErrorBoundary";
+export { ErrorBoundary };
 
 export default function RootLayout() {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light";
@@ -40,8 +39,6 @@ export default function RootLayout() {
     return null;
   }
 
-  // router.replace("/preview/landing-page");
-
   return (
     <SafeAreaProvider>
       <ThemeProvider value={NAV_THEME[colorScheme]}>
@@ -52,8 +49,7 @@ export default function RootLayout() {
           )}
         >
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-          <Header />
-          <View className="flex-1">
+          <AppShell>
             <Stack
               screenOptions={{
                 headerShown: false,
@@ -65,8 +61,7 @@ export default function RootLayout() {
                 options={{ gestureEnabled: false }}
               />
             </Stack>
-          </View>
-          <PortalHost />
+          </AppShell>
         </View>
       </ThemeProvider>
     </SafeAreaProvider>

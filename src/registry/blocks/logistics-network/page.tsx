@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
-import { FilterSidebar } from "./components/filter-sidebar";
-import { NetworkMap } from "./components/network-map";
 import { hubs, routes } from "./data";
+import { FilterSidebar } from "./ui/filter-sidebar";
+import { NetworkMap } from "./ui/network-map";
 
 export default function Page() {
   return (

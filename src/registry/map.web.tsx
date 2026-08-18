@@ -8,8 +8,8 @@ import {
 } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 
-import { WebMapPreviewPlaceholder } from "@/atoms/WebMapPreviewPlaceholder";
-import { cn } from "@/lib/utils";
+import { WebMapPreviewPlaceholder } from "@/molecules/WebMapPreviewPlaceholder";
+import { cn } from "@/lib/Utils/Cn";
 
 type Theme = "light" | "dark";
 

@@ -1,15 +1,12 @@
 import { Box, Code, Layers, Moon, Puzzle, Zap } from "lucide-react-native";
 import { View } from "react-native";
 
-import {
-  DocsLayout,
-  DocsLink,
-  DocsListItem,
-  DocsSection,
-} from "../Common/Layout";
-
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { DocsLink } from "@/molecules/DocsLink";
+import { DocsListItem } from "@/molecules/DocsListItem";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 const features = [
   {
@@ -49,7 +46,7 @@ const features = [
 
 export function IntroductionPage() {
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="Introduction"
       description="React Native map components forked from mapcn, the web-only original."
       next={{ title: "Installation", href: "/docs/installation" }}
@@ -255,6 +252,6 @@ export function IntroductionPage() {
           ))}
         </View>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

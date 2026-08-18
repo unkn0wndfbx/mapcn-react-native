@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
-import { ExampleCard } from "@/atoms/ExampleCard";
-import { ExampleMap } from "@/atoms/ExampleMap";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ExampleCard } from "@/molecules/ExampleCard";
+import { ExampleMap } from "@/molecules/ExampleMap";
 import { MapMarker, MarkerContent, useMap } from "@/registry/map";
 
 const flyToPreview = getPreviewImages("home-fly-to");

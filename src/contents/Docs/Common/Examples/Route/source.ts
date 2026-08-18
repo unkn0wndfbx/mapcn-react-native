@@ -1,13 +1,13 @@
 export const routeExampleSource = `import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/atoms/Text";
 import {
   Map,
   MapMarker,
   MapRoute,
   MarkerContent,
   MarkerTooltip,
-} from "@/components/ui/map";
+} from "@/atoms/Map";
 
 const route = [
   [-74.006, 40.7128], // NYC City Hall

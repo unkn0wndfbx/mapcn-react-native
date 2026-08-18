@@ -3,10 +3,10 @@ import { View } from "react-native";
 
 import { CodeBlock } from "../../CodeBlock";
 
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { useLockParentScrollOnMapTouch } from "@/lib/parent-scroll-lock";
-import { cn } from "@/lib/utils";
+import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
+import { cn } from "@/lib/Utils/Cn";
+import { useLockParentScrollOnMapTouch } from "@/providers/ParentScrollLock";
 
 interface ComponentPreviewClientProps {
   children: React.ReactNode;

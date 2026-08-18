@@ -59,10 +59,10 @@ Or with the Reusables CLI:
 npx @react-native-reusables/cli@latest add unkn0wndfbx/mapcn-react-native/map
 ```
 
-Then import from `@/components/ui/map`:
+Then import from `@/atoms/Map`:
 
 ```tsx
-import { Map, MapControls } from "@/components/ui/map";
+import { Map, MapControls } from "@/atoms/Map";
 
 export function MyMap() {
   return (
@@ -92,7 +92,9 @@ bun run registry:build
 ```
 src/
 ├── app/              # Expo Router screens
-├── components/       # Shared UI components
+├── atoms/            # Atomic UI primitives
+├── molecules/        # Composed UI components
+├── organisms/        # Layout and feature components
 ├── registry/         # Map component library (forked from mapcn)
 │   ├── map.tsx       # Map, Marker, Popup, Route, Controls, etc.
 │   └── blocks/       # Full-page block examples

@@ -1,6 +1,6 @@
 export const mapControlsExampleSource = `import { View } from "react-native";
 
-import { Map, MapControls } from "@/components/ui/map";
+import { Map, MapControls } from "@/atoms/Map";
 
 export function MapControlsExample() {
   return (

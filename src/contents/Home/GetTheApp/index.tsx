@@ -2,19 +2,21 @@ import { Image } from "expo-image";
 import { Smartphone } from "lucide-react-native";
 import { Platform, useColorScheme, View } from "react-native";
 
-import { Phone } from "./Phone";
-
 import { AppStoreIcon } from "@/atoms/AppStoreIcon";
+import { Badge } from "@/atoms/Badge";
+import { Icon } from "@/atoms/Icon";
 import { PlayStoreIcon } from "@/atoms/PlayStoreIcon";
-import { QrCode } from "@/atoms/QrCode";
-import { StoreBadgeButton } from "@/atoms/StoreBadgeButton";
-import { Badge } from "@/components/ui/badge";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
-import { getPreviewImages } from "@/lib/preview-images";
-import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/site-metadata";
-import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { Text } from "@/atoms/Text";
+import {
+  SITE_APP_STORE_URL,
+  SITE_PLAY_STORE_URL,
+} from "@/lib/Config/SiteMetadata";
+import { THEME } from "@/lib/Config/Theme";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { cn } from "@/lib/Utils/Cn";
+import { QrCode } from "@/molecules/QrCode";
+import { StoreBadgeButton } from "@/molecules/StoreBadgeButton";
+import { Phone } from "@/organisms/GetTheApp/Phone";
 
 const landingPagePreview = getPreviewImages("landing-page");
 const QR_SIZE = 132;

@@ -11,7 +11,7 @@ const withNativeWindConfig = withNativeWind(config, {
 
 const maplibreWebShim = path.resolve(
   __dirname,
-  "src/lib/maplibre-react-native.web.ts",
+  "src/lib/Polyfills/MapLibre/index.web.ts",
 );
 
 const originalResolveRequest = withNativeWindConfig.resolver.resolveRequest;

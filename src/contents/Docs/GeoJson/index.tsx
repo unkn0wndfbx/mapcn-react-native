@@ -1,11 +1,13 @@
-import { ComponentPreview } from "../Common/ComponentPreview";
 import { GeoJSONExample } from "../Common/Examples/GeoJson";
 import { MapOverlayExample } from "../Common/Examples/MapOverlay";
-import { DocsCode, DocsLayout, DocsSection } from "../Common/Layout";
 
-import { Text } from "@/components/ui/text";
-import { getExampleSource } from "@/lib/example-source";
-import { getPreviewImages } from "@/lib/preview-images";
+import { Text } from "@/atoms/Text";
+import { getExampleSource } from "@/lib/Docs/ExampleSource";
+import { getPreviewImages } from "@/lib/Docs/PreviewImages";
+import { ComponentPreview } from "@/molecules/ComponentPreview";
+import { DocsCode } from "@/molecules/DocsCode";
+import { DocsSection } from "@/molecules/DocsSection";
+import { DocsPageLayout } from "@/templates/DocsPageLayout";
 
 export function GeoJSONPage() {
   const geojsonPreview = getPreviewImages("geojson");
@@ -14,7 +16,7 @@ export function GeoJSONPage() {
   const overlaySource = getExampleSource("map-overlay-example.tsx");
 
   return (
-    <DocsLayout
+    <DocsPageLayout
       title="GeoJSON"
       description="Render arbitrary GeoJSON as fill and outline layers for choropleths and region maps."
       prev={{ title: "Arcs", href: "/docs/arcs" }}
@@ -60,6 +62,6 @@ export function GeoJSONPage() {
           <MapOverlayExample />
         </ComponentPreview>
       </DocsSection>
-    </DocsLayout>
+    </DocsPageLayout>
   );
 }

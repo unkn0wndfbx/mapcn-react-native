@@ -1,10 +1,8 @@
-import * as React from "react";
 import { Pressable, View } from "react-native";
 
-import { useDocsScroll } from "../docs-scroll-context";
-
-import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
+import { Text } from "@/atoms/Text";
+import { cn } from "@/lib/Utils/Cn";
+import { useDocsScroll } from "@/templates/DocsPageLayout/docs-scroll-context";
 
 interface TocItem {
   title: string;

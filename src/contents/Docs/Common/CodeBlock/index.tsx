@@ -8,14 +8,14 @@ import {
   useColorScheme,
 } from "react-native";
 
-import { CodeSurface } from "@/components/code-surface";
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
-import { copyText } from "@/lib/clipboard";
-import { highlightCode } from "@/lib/highlight";
-import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { Button } from "@/atoms/Button";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { THEME } from "@/lib/Config/Theme";
+import { copyText } from "@/lib/Platform/Clipboard";
+import { highlightCode } from "@/lib/Platform/Highlight";
+import { cn } from "@/lib/Utils/Cn";
+import { CodeSurface } from "@/molecules/CodeSurface";
 
 const CODE_LINE_HEIGHT = 20;
 

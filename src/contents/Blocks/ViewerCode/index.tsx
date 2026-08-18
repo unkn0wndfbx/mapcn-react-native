@@ -2,17 +2,17 @@ import { Check, ChevronRight, Copy, File, Folder } from "lucide-react-native";
 import * as React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
+import { trackEvent } from "@/lib/Analytics/Events";
+import { copyText } from "@/lib/Platform/Clipboard";
+import { type FileTree } from "@/lib/Registry/Blocks";
+import { cn } from "@/lib/Utils/Cn";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
-import { type FileTree } from "@/lib/blocks";
-import { copyText } from "@/lib/clipboard";
-import { trackEvent } from "@/lib/events";
-import { cn } from "@/lib/utils";
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/molecules/Collapsible";
 
 export interface HighlightedFile {
   path: string;

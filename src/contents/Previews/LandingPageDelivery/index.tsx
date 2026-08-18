@@ -2,14 +2,14 @@ import { Truck } from "lucide-react-native";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
+import { Icon } from "@/atoms/Icon";
+import { Text } from "@/atoms/Text";
 import {
-  landingPageDeliveryRoute,
-  landingPageDeliveryRouteColor,
-  landingPageDeliveryTruckPosition,
-  landingPageDeliveryViewport,
-} from "@/lib/landing-page-delivery-data";
+    landingPageDeliveryRoute,
+    landingPageDeliveryRouteColor,
+    landingPageDeliveryTruckPosition,
+    landingPageDeliveryViewport,
+} from "@/lib/Data/LandingPageDelivery";
 import { Map, MapMarker, MapRoute, MarkerContent } from "@/registry/map";
 
 export function LandingPageDeliveryPreview() {

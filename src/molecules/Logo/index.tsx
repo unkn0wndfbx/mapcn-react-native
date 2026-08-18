@@ -1,0 +1,66 @@
+import { Link } from "expo-router";
+import { Pressable, useColorScheme, View } from "react-native";
+import Svg, { Circle, Path, Rect } from "react-native-svg";
+
+import { Text } from "@/atoms/Text";
+import { SITE_NAME } from "@/lib/Config/SiteMetadata";
+import { THEME } from "@/lib/Config/Theme";
+import { cn } from "@/lib/Utils/Cn";
+
+type LogoProps = {
+  className?: string;
+  onPress?: () => void;
+  isLink?: boolean;
+};
+
+export function Logo({ className, onPress, isLink = true }: LogoProps) {
+  const colorScheme = useColorScheme();
+  const colors = THEME[colorScheme === "dark" ? "dark" : "light"];
+
+  const content = (
+    <>
+      <Svg
+        width="32"
+        height="32"
+        viewBox="0 0 32 32"
+        fill="none"
+        className="size-4 md:size-6"
+      >
+        <Rect
+          width="32"
+          height="32"
+          rx="8"
+          fill={colors.foreground}
+        />
+        <Path
+          d="M16 6C12.134 6 9 9.134 9 13C9 18.25 16 26 16 26C16 26 23 18.25 23 13C23 9.134 19.866 6 16 6Z"
+          fill={colors.background}
+        />
+        <Circle
+          cx="16"
+          cy="13"
+          r="3"
+          fill={colors.foreground}
+        />
+      </Svg>
+
+      <Text className="text-lg font-bold leading-none">{SITE_NAME}</Text>
+    </>
+  );
+
+  const logoClassName = cn("flex flex-row items-center gap-1.5", className);
+
+  if (isLink) {
+    return (
+      <Link
+        href="/"
+        asChild
+        onPress={onPress}
+      >
+        <Pressable className={logoClassName}>{content}</Pressable>
+      </Link>
+    );
+  }
+
+  return <View className={logoClassName}>{content}</View>;
+}

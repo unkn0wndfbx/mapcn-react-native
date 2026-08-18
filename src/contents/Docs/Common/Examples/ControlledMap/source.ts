@@ -1,8 +1,8 @@
 export const controlledMapExampleSource = `import { useState } from "react";
 import { View } from "react-native";
 
-import { Text } from "@/components/ui/text";
-import { Map, type MapViewport } from "@/components/ui/map";
+import { Text } from "@/atoms/Text";
+import { Map, type MapViewport } from "@/atoms/Map";
 
 export function ControlledMapExample() {
   const [viewport, setViewport] = useState<MapViewport>({

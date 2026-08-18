@@ -3,8 +3,8 @@ import { useColorScheme, View } from "react-native";
 
 import { mapConfig, visitorsByCountry, type Theme } from "./data";
 
-import { Text } from "@/components/ui/text";
-import { useWorldData } from "@/lib/use-world-data";
+import { Text } from "@/atoms/Text";
+import { useWorldData } from "@/hooks/WorldData";
 import { Map, MapControls, MapGeoJSON, MapPopup } from "@/registry/map";
 
 function buildFillColor(theme: Theme): unknown[] {
