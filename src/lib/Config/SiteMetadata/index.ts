@@ -41,7 +41,8 @@ export const SITE_OG_IMAGE = {
   alt: "mapcn for react native - Beautiful maps, made simple",
 } as const;
 
-export const SITE_APP_STORE_URL = ""; // TODO: Add App Store URL
+export const SITE_APP_STORE_URL =
+  "https://apps.apple.com/us/app/mapcn-for-react-native/id6799699626";
 
 export const SITE_PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=com.unkn0wnd.fbx.mapcnreactnative&pcampaignid=web_share";

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { Button } from "@/atoms/Button";
+import { Text } from "@/atoms/Text";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +10,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/molecules/DropdownMenu";
-import { Text } from "@/atoms/Text";
 import { Map, useMap } from "@/registry/map";
 
 const styles = {
