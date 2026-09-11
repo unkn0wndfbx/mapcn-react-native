@@ -12,6 +12,7 @@ import { Platform, useColorScheme, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import "@/lib/Polyfills/Appearance";
+import { AnalyticsProvider } from "@/lib/Analytics/Provider";
 import { NAV_THEME } from "@/lib/Config/Theme";
 import { cn } from "@/lib/Utils/Cn";
 import { AppShell, ErrorBoundary } from "@/templates/AppShell";
@@ -49,19 +50,21 @@ export default function RootLayout() {
           )}
         >
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-          <AppShell>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: "transparent" },
-              }}
-            >
-              <Stack.Screen
-                name="index"
-                options={{ gestureEnabled: false }}
-              />
-            </Stack>
-          </AppShell>
+          <AnalyticsProvider>
+            <AppShell>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: "transparent" },
+                }}
+              >
+                <Stack.Screen
+                  name="index"
+                  options={{ gestureEnabled: false }}
+                />
+              </Stack>
+            </AppShell>
+          </AnalyticsProvider>
         </View>
       </ThemeProvider>
     </SafeAreaProvider>

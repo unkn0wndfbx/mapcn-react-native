@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+import { z } from "zod";
+
 const REGISTRY_DIR = path.join(process.cwd(), "public", "r");
 
 const IMPORT_REPLACEMENTS: Record<string, string> = {
@@ -9,21 +11,31 @@ const IMPORT_REPLACEMENTS: Record<string, string> = {
   "@/lib/use-world-data": "@/hooks/WorldData",
 };
 
-interface RegistryFile {
-  path: string;
-  content?: string;
-  type?: string;
-  target?: string;
-}
+const registryFileSchema = z
+  .object({
+    path: z.string(),
+    content: z.string().optional(),
+    type: z.string().optional(),
+    target: z.string().optional(),
+  })
+  .passthrough();
 
-interface RegistryItem {
-  files?: RegistryFile[];
-}
+const registryDataSchema = z
+  .object({
+    files: z.array(registryFileSchema).optional(),
+    items: z
+      .array(
+        z
+          .object({
+            files: z.array(registryFileSchema).optional(),
+          })
+          .passthrough(),
+      )
+      .optional(),
+  })
+  .passthrough();
 
-interface RegistryData {
-  files?: RegistryFile[];
-  items?: RegistryItem[];
-}
+type RegistryFile = z.infer<typeof registryFileSchema>;
 
 function fixContent(content: string): string {
   let next = content;
@@ -38,10 +50,17 @@ function fixContent(content: string): string {
 
 function processFile(filePath: string): void {
   const raw = fs.readFileSync(filePath, "utf-8");
-  const data = JSON.parse(raw) as RegistryData;
+  const parsedJson: unknown = JSON.parse(raw);
+  const result = registryDataSchema.safeParse(parsedJson);
+  if (!result.success) {
+    throw new Error(`Invalid registry file: ${filePath}`, {
+      cause: result.error,
+    });
+  }
+  const data = result.data;
   let changed = false;
 
-  const fixFiles = (files: RegistryFile[]) => {
+  const fixFiles = (files: RegistryFile[]): void => {
     for (const file of files) {
       if (!file.content) {
         continue;

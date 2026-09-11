@@ -20,29 +20,29 @@ import type * as GeoJSON from "geojson";
 import { Locate, Maximize, Minus, Plus, X } from "lucide-react-native";
 import type * as React from "react";
 import {
-    Children,
-    cloneElement,
-    createContext,
-    forwardRef,
-    isValidElement,
-    useCallback,
-    useContext,
-    useEffect,
-    useId,
-    useImperativeHandle,
-    useMemo,
-    useRef,
-    useState,
-    type ReactNode,
+  Children,
+  cloneElement,
+  createContext,
+  forwardRef,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
 } from "react";
 import {
-    ActivityIndicator,
-    Animated,
-    Pressable,
-    Text,
-    useColorScheme,
-    View,
-    type NativeSyntheticEvent,
+  ActivityIndicator,
+  Animated,
+  Pressable,
+  Text,
+  useColorScheme,
+  View,
+  type NativeSyntheticEvent,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
@@ -165,6 +165,8 @@ type MapProps = Omit<
   viewport?: Partial<MapViewport>;
   onViewportChange?: (viewport: MapViewport) => void;
   loading?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 };
 
 function MapLoader() {
@@ -193,6 +195,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     style,
     onPress,
     dragPan = true,
+    minZoom,
+    maxZoom,
     ...props
   },
   ref,
@@ -205,7 +209,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const [camera, setCamera] = useState<CameraRef | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isStyleLoaded, setIsStyleLoaded] = useState(false);
-  const [nativeDragPan, setNativeDragPan] = useState(false);
   const internalUpdateRef = useRef(false);
   const onViewportChangeRef = useRef(onViewportChange);
   const mapPressListenersRef = useRef(new Set<MapPressListener>());
@@ -213,10 +216,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   useEffect(() => {
     onViewportChangeRef.current = onViewportChange;
   }, [onViewportChange]);
-
-  useEffect(() => {
-    setNativeDragPan(dragPan);
-  }, [dragPan]);
 
   const addMapPressListener = useCallback((listener: MapPressListener) => {
     mapPressListenersRef.current.add(listener);
@@ -341,7 +340,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
         <MapLibreMap
           androidView="texture"
           {...props}
-          dragPan={nativeDragPan}
+          dragPan={dragPan}
           ref={(instance) => {
             nativeMapRef.current = instance;
             setMap(instance);
@@ -372,6 +371,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
               cameraRef.current = instance;
               setCamera(instance);
             }}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
             {...(isControlled ? cameraState : { initialViewState })}
           />
           {isStyleLoaded ? children : null}
@@ -931,6 +932,7 @@ function MapPopup({
 type MapControlsProps = {
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
   className?: string;
+  style?: React.ComponentProps<typeof View>["style"];
   showZoom?: boolean;
   showCompass?: boolean;
   showLocate?: boolean;
@@ -962,7 +964,11 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       },
       (error: unknown) => {
         clearTimeout(timer);
-        reject(error);
+        reject(
+          error instanceof Error
+            ? error
+            : new Error("Map operation failed", { cause: error }),
+        );
       },
     );
   });
@@ -1072,6 +1078,7 @@ function CompassButton({ onPress }: { onPress: () => void }) {
 
 function MapControls({
   className,
+  style,
   position = "bottom-right",
   showZoom = true,
   showCompass = false,
@@ -1139,6 +1146,7 @@ function MapControls({
         className,
       )}
       pointerEvents="box-none"
+      style={style}
     >
       {showZoom ? (
         <ControlGroup>
@@ -1777,41 +1785,40 @@ function MapClusterLayer<
 }
 
 export {
-    DefaultMarkerIcon,
-    Map,
-    MapArc,
-    MapClusterLayer,
-    MapControls,
-    MapGeoJSON,
-    MapMarker,
-    MapPopup,
-    MapRoute,
-    MarkerContent,
-    MarkerLabel,
-    MarkerPopup,
-    MarkerTooltip,
-    useMap
+  DefaultMarkerIcon,
+  Map,
+  MapArc,
+  MapClusterLayer,
+  MapControls,
+  MapGeoJSON,
+  MapMarker,
+  MapPopup,
+  MapRoute,
+  MarkerContent,
+  MarkerLabel,
+  MarkerPopup,
+  MarkerTooltip,
+  useMap,
 };
 export type {
-    MapArcDatum,
-    MapArcEvent,
-    MapArcProps,
-    MapClusterLayerProps,
-    MapControlsProps,
-    MapGeoJSONData,
-    MapGeoJSONEvent,
-    MapGeoJSONFeature,
-    MapGeoJSONProps,
-    MapMarkerProps,
-    MapPopupProps,
-    MapProps,
-    MapRef,
-    MapRouteProps,
-    MapStyleOption,
-    MapViewport,
-    MarkerContentProps,
-    MarkerLabelProps,
-    MarkerPopupProps,
-    MarkerTooltipProps
+  MapArcDatum,
+  MapArcEvent,
+  MapArcProps,
+  MapClusterLayerProps,
+  MapControlsProps,
+  MapGeoJSONData,
+  MapGeoJSONEvent,
+  MapGeoJSONFeature,
+  MapGeoJSONProps,
+  MapMarkerProps,
+  MapPopupProps,
+  MapProps,
+  MapRef,
+  MapRouteProps,
+  MapStyleOption,
+  MapViewport,
+  MarkerContentProps,
+  MarkerLabelProps,
+  MarkerPopupProps,
+  MarkerTooltipProps,
 };
-

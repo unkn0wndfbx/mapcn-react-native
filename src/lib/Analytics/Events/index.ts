@@ -1,4 +1,4 @@
-import { track } from "@vercel/analytics";
+import { captureEvent } from "@/lib/Analytics/Client";
 
 type EventName =
   | "copy_install_command"
@@ -8,11 +8,11 @@ type EventName =
 
 type AllowedPropertyValues = string | number | boolean | null;
 
-export interface Event {
+interface Event {
   name: EventName;
   properties?: Record<string, AllowedPropertyValues>;
 }
 
 export function trackEvent({ name, properties }: Event): void {
-  track(name, properties);
+  captureEvent(name, properties);
 }

@@ -2,6 +2,7 @@ import { TrendingUp } from "lucide-react-native";
 import { View } from "react-native";
 
 import { totalVisitors, visitorGrowth, visitorLocations } from "./data";
+import { getBubbleSize } from "./utils";
 
 import { Badge } from "@/atoms/Badge";
 import { Icon } from "@/atoms/Icon";
@@ -12,13 +13,9 @@ import { Map, MapGeoJSON, MapMarker, MarkerContent } from "@/registry/map";
 const WORLD_GEOJSON =
   "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@v5.1.2/geojson/ne_110m_admin_0_countries.geojson";
 
-function bubbleSize(visitors: number) {
-  return Math.round(10 + Math.sqrt(visitors) * 2.2);
-}
-
 export default function Page() {
   return (
-    <View className="min-h-screen flex-1 items-center justify-center p-8">
+    <View className="flex-1 items-center justify-center p-4 md:p-8">
       <Card className="relative aspect-video w-full max-w-md overflow-hidden py-0">
         <View className="absolute inset-0">
           <Map
@@ -33,7 +30,7 @@ export default function Page() {
               linePaint={false}
             />
             {visitorLocations.map((location) => {
-              const size = bubbleSize(location.visitors);
+              const size = getBubbleSize(location.visitors);
               return (
                 <MapMarker
                   key={location.city}

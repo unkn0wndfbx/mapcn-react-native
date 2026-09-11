@@ -1,14 +1,17 @@
-import analyticsCard from "../../../../public/r/analytics-card.json";
-import analyticsMap from "../../../../public/r/analytics-map.json";
-import choropleth from "../../../../public/r/choropleth.json";
-import deliveryTracker from "../../../../public/r/delivery-tracker.json";
-import heatmap from "../../../../public/r/heatmap.json";
-import logisticsNetwork from "../../../../public/r/logistics-network.json";
-import storeLocator from "../../../../public/r/store-locator.json";
-import uptimeMonitor from "../../../../public/r/uptime-monitor.json";
+import analyticsCard from "../../../public/r/analytics-card.json";
+import analyticsMap from "../../../public/r/analytics-map.json";
+import choropleth from "../../../public/r/choropleth.json";
+import deliveryTracker from "../../../public/r/delivery-tracker.json";
+import heatmap from "../../../public/r/heatmap.json";
+import logisticsNetwork from "../../../public/r/logistics-network.json";
+import storeLocator from "../../../public/r/store-locator.json";
+import uptimeMonitor from "../../../public/r/uptime-monitor.json";
 
-import { createFileTreeForRegistryItemFiles, getAllBlocks } from "@/lib/Registry/Blocks";
 import { getBlockPreviewImages } from "@/lib/Docs/PreviewImages";
+import {
+  createFileTreeForRegistryItemFiles,
+  getAllBlocks,
+} from "@/lib/Registry/Blocks";
 import { BlockPreview } from "@/organisms/BlockPreview";
 import { MobileBlockPreview } from "@/organisms/BlockPreview/Mobile";
 import type { HighlightedFile } from "@/organisms/BlockViewerCode";

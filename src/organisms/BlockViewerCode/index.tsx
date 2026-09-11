@@ -1,13 +1,37 @@
-import { Check, ChevronRight, Copy, File, Folder } from "lucide-react-native";
+import {
+  ChevronRight,
+  File,
+  Folder,
+  FolderOpen,
+  PanelLeft,
+  PanelLeftClose,
+  X,
+} from "lucide-react-native";
 import * as React from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import Animated, {
+  Easing,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
+import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { Text } from "@/atoms/Text";
-import { type FileTree } from "@/lib/Registry/Blocks";
-import { copyText } from "@/lib/Platform/Clipboard";
 import { trackEvent } from "@/lib/Analytics/Events";
+import { type FileTree } from "@/lib/Registry/Blocks";
 import { cn } from "@/lib/Utils/Cn";
+import { CodeBlock } from "@/molecules/CodeBlock";
+import { CodeCopyButton } from "@/molecules/CodeCopyButton";
 import {
   Collapsible,
   CollapsibleContent,
@@ -26,6 +50,8 @@ interface BlockViewerCodeContext {
   setActiveFile: (file: string) => void;
   highlightedFiles: HighlightedFile[];
   tree: FileTree[];
+  isCompact: boolean;
+  setTreeOpen: (open: boolean) => void;
 }
 
 const BlockViewerCodeCtx = React.createContext<BlockViewerCodeContext | null>(
@@ -51,89 +77,248 @@ export function BlockViewerCode({
   highlightedFiles,
   height = 930,
 }: BlockViewerCodeProps) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 640;
+  const [treeOpen, setTreeOpen] = React.useState(!isCompact);
   const [activeFile, setActiveFile] = React.useState<string>(
     highlightedFiles[0]?.target ?? "",
   );
-  const [copied, setCopied] = React.useState(false);
 
   const file = React.useMemo(
     () => highlightedFiles.find((f) => f.target === activeFile),
     [highlightedFiles, activeFile],
   );
 
-  async function copyCode() {
-    if (!file) return;
+  React.useEffect(() => {
+    setTreeOpen(!isCompact);
+  }, [isCompact]);
 
-    await copyText(file.content);
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-    trackEvent({
-      name: "copy_block_code",
-      properties: { file: file.target },
-    });
-  }
+  const selectFile = React.useCallback(
+    (nextFile: string) => {
+      setActiveFile(nextFile);
+      if (isCompact) {
+        setTreeOpen(false);
+      }
+    },
+    [isCompact],
+  );
 
   if (!file) return null;
 
   return (
     <BlockViewerCodeCtx.Provider
-      value={{ activeFile, setActiveFile, highlightedFiles, tree }}
+      value={{
+        activeFile,
+        setActiveFile: selectFile,
+        highlightedFiles,
+        tree,
+        isCompact,
+        setTreeOpen,
+      }}
     >
       <View
-        className="flex-row overflow-hidden rounded-xl border"
+        className="relative overflow-hidden rounded-xl border border-border"
         style={{ height }}
       >
-        <View className="border-border w-56 shrink-0 border-r">
-          <FileTreeSidebar />
-        </View>
-        <View className="min-w-0 flex-1">
-          <View className="bg-surface border-border h-12 flex-row items-center gap-2 border-b px-4">
-            <Text
-              className="text-muted-foreground flex-1 text-sm"
-              numberOfLines={1}
+        <View className="min-h-0 flex-1 flex-row">
+          {isCompact ? null : (
+            <FileTreePanel
+              open={treeOpen}
+              compact={false}
             >
-              {file.target}
-            </Text>
-            <Pressable
-              onPress={() => {
-                void copyCode();
-              }}
-              accessibilityLabel={copied ? "Copied" : "Copy code"}
-              className="bg-code size-8 items-center justify-center rounded-md"
-            >
-              <Icon
-                as={copied ? Check : Copy}
-                size={14}
-                className="text-muted-foreground"
+              <FileTreeSidebar />
+            </FileTreePanel>
+          )}
+          <View className="min-h-0 min-w-0 flex-1 flex-col">
+            <View className="bg-surface border-border h-12 flex-row items-center gap-2 border-b px-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                accessibilityLabel={treeOpen ? "Hide files" : "Show files"}
+                onPress={() => {
+                  setTreeOpen(!treeOpen);
+                }}
+                className="text-muted-foreground size-8 rounded-md"
+              >
+                <Icon
+                  as={treeOpen ? PanelLeftClose : PanelLeft}
+                  size={15}
+                  className="text-muted-foreground"
+                />
+              </Button>
+              <Text
+                className="text-muted-foreground min-w-0 flex-1 text-sm"
+                numberOfLines={1}
+              >
+                {file.target}
+              </Text>
+              <CodeCopyButton
+                text={file.content}
+                onCopy={() => {
+                  trackEvent({
+                    name: "copy_block_code",
+                    properties: { file: file.target },
+                  });
+                }}
               />
-            </Pressable>
+            </View>
+            <CodeBlock
+              key={file.target}
+              code={file.content}
+              language={getCodeLanguage(file.target)}
+              showHeader={false}
+              showCopyButton={false}
+              fill
+              className="rounded-none border-0"
+            />
           </View>
-          <ScrollView
-            className="bg-code flex-1"
-            contentContainerClassName="px-4 py-4"
-          >
-            <Text className="font-mono text-sm leading-5">{file.content}</Text>
-          </ScrollView>
         </View>
+        {isCompact ? (
+          <FileTreePanel
+            open={treeOpen}
+            compact
+            onClose={() => {
+              setTreeOpen(false);
+            }}
+          >
+            <FileTreeSidebar />
+          </FileTreePanel>
+        ) : null}
       </View>
     </BlockViewerCodeCtx.Provider>
   );
 }
 
+const TREE_WIDTH = 224;
+const TREE_ANIMATION = {
+  duration: 220,
+  easing: Easing.out(Easing.cubic),
+  reduceMotion: ReduceMotion.System,
+};
+
+function FileTreePanel({
+  open,
+  compact,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  compact: boolean;
+  onClose?: () => void;
+  children: React.ReactNode;
+}) {
+  const progress = useSharedValue(open ? 1 : 0);
+
+  React.useEffect(() => {
+    progress.value = withTiming(open ? 1 : 0, TREE_ANIMATION);
+  }, [open, progress]);
+
+  const widthStyle = useAnimatedStyle(() => ({
+    width: progress.value * TREE_WIDTH,
+  }));
+
+  const drawerStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: (1 - progress.value) * -TREE_WIDTH }],
+  }));
+
+  const backdropStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+  }));
+
+  const panel = (
+    <View
+      className="border-border h-full border-r"
+      style={styles.treeInner}
+    >
+      {children}
+    </View>
+  );
+
+  if (compact) {
+    return (
+      <>
+        <Animated.View
+          pointerEvents={open ? "auto" : "none"}
+          className={cn(
+            "absolute inset-0 z-10 bg-black/40",
+            Platform.OS === "web" && "duration-200 ease-out transition-opacity",
+          )}
+          style={
+            Platform.OS === "web" ? { opacity: open ? 1 : 0 } : backdropStyle
+          }
+        >
+          <Pressable
+            accessibilityLabel="Hide files"
+            onPress={onClose}
+            className="flex-1"
+          />
+        </Animated.View>
+        <Animated.View
+          pointerEvents={open ? "auto" : "none"}
+          className={cn(
+            "bg-background absolute inset-y-0 left-0 z-20 overflow-hidden",
+            Platform.OS === "web" &&
+              "duration-200 ease-out transition-transform",
+          )}
+          style={
+            Platform.OS === "web"
+              ? {
+                  width: TREE_WIDTH,
+                  transform: [{ translateX: open ? 0 : -TREE_WIDTH }],
+                }
+              : [styles.treeInner, drawerStyle]
+          }
+        >
+          {panel}
+        </Animated.View>
+      </>
+    );
+  }
+
+  return (
+    <Animated.View
+      className={cn(
+        "h-full shrink-0 overflow-hidden",
+        Platform.OS === "web" && "duration-200 ease-out transition-[width]",
+      )}
+      style={
+        Platform.OS === "web" ? { width: open ? TREE_WIDTH : 0 } : widthStyle
+      }
+    >
+      {panel}
+    </Animated.View>
+  );
+}
+
 function FileTreeSidebar() {
-  const { tree } = useBlockViewerCode();
+  const { tree, isCompact, setTreeOpen } = useBlockViewerCode();
 
   return (
     <View className="flex-1">
-      <View className="border-border h-12 justify-center border-b px-4">
+      <View className="border-border h-12 flex-row items-center justify-between gap-2 border-b px-4">
         <Text className="text-sm font-medium">Files</Text>
+        {isCompact ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            accessibilityLabel="Hide files"
+            onPress={() => {
+              setTreeOpen(false);
+            }}
+            className="text-muted-foreground size-8 rounded-md"
+          >
+            <Icon
+              as={X}
+              size={15}
+              className="text-muted-foreground"
+            />
+          </Button>
+        ) : null}
       </View>
       <ScrollView contentContainerClassName="py-1.5">
-        {tree.map((file, index) => (
+        {tree.map((file) => (
           <TreeNode
-            key={index}
+            key={file.path ?? file.name}
             item={file}
             depth={0}
           />
@@ -145,6 +330,7 @@ function FileTreeSidebar() {
 
 function TreeNode({ item, depth }: { item: FileTree; depth: number }) {
   const { activeFile, setActiveFile } = useBlockViewerCode();
+  const [open, setOpen] = React.useState(true);
   const paddingLeft = 12 + depth * 12;
 
   if (!item.children) {
@@ -155,9 +341,10 @@ function TreeNode({ item, depth }: { item: FileTree; depth: number }) {
         onPress={() => {
           if (item.path) setActiveFile(item.path);
         }}
+        accessibilityLabel={item.name}
         className={cn(
           "flex-row items-center gap-2 py-1.5 pr-3",
-          isActive && "bg-muted-foreground/15",
+          isActive ? "bg-muted-foreground/15" : "hover:bg-muted/50",
         )}
         style={{ paddingLeft }}
       >
@@ -165,9 +352,10 @@ function TreeNode({ item, depth }: { item: FileTree; depth: number }) {
         <Icon
           as={File}
           size={14}
+          className="text-muted-foreground"
         />
         <Text
-          className="text-sm"
+          className="min-w-0 flex-1 text-sm"
           numberOfLines={1}
         >
           {item.name}
@@ -177,30 +365,44 @@ function TreeNode({ item, depth }: { item: FileTree; depth: number }) {
   }
 
   return (
-    <Collapsible defaultOpen>
+    <Collapsible
+      open={open}
+      onOpenChange={setOpen}
+    >
       <CollapsibleTrigger
-        className="flex-row items-center gap-2 py-1.5 pr-3"
+        accessibilityLabel={`${open ? "Collapse" : "Expand"} ${item.name}`}
+        className="hover:bg-muted/50 flex-row items-center gap-2 py-1.5 pr-3"
         style={{ paddingLeft }}
       >
+        <View
+          className={cn(
+            "size-4 items-center justify-center duration-200 ease-out",
+            Platform.OS === "web" && "transition-transform",
+            open && "rotate-90",
+          )}
+        >
+          <Icon
+            as={ChevronRight}
+            size={14}
+            className="text-muted-foreground"
+          />
+        </View>
         <Icon
-          as={ChevronRight}
+          as={open ? FolderOpen : Folder}
           size={14}
-        />
-        <Icon
-          as={Folder}
-          size={14}
+          className="text-muted-foreground"
         />
         <Text
-          className="text-sm"
+          className="min-w-0 flex-1 text-sm"
           numberOfLines={1}
         >
           {item.name}
         </Text>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        {item.children.map((subItem, key) => (
+        {item.children.map((subItem) => (
           <TreeNode
-            key={key}
+            key={subItem.path ?? `${item.name}/${subItem.name}`}
             item={subItem}
             depth={depth + 1}
           />
@@ -209,3 +411,34 @@ function TreeNode({ item, depth }: { item: FileTree; depth: number }) {
     </Collapsible>
   );
 }
+
+function getCodeLanguage(path: string): string {
+  const extension = path.split(".").pop()?.toLowerCase();
+
+  switch (extension) {
+    case "ts":
+      return "ts";
+    case "tsx":
+      return "tsx";
+    case "js":
+      return "js";
+    case "jsx":
+      return "jsx";
+    case "json":
+      return "json";
+    case "css":
+      return "css";
+    case "md":
+      return "markdown";
+    case undefined:
+      return "tsx";
+    default:
+      return "tsx";
+  }
+}
+
+const styles = StyleSheet.create({
+  treeInner: {
+    width: TREE_WIDTH,
+  },
+});

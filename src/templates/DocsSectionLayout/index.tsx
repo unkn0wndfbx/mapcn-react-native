@@ -5,6 +5,8 @@ import { useIsMobile } from "@/hooks/Mobile";
 import { DocsSidebar } from "@/organisms/DocsSidebar";
 import { SidebarInset, SidebarProvider } from "@/organisms/Sidebar";
 
+const DOCS_DESKTOP_BREAKPOINT = 1024;
+
 function DocsStack() {
   return (
     <Stack
@@ -17,7 +19,7 @@ function DocsStack() {
 }
 
 export function DocsSectionLayout() {
-  const isMobileNative = useIsMobile();
+  const isMobileNative = useIsMobile(DOCS_DESKTOP_BREAKPOINT);
   const isMobile = Platform.OS !== "web" || isMobileNative;
 
   if (isMobile) {

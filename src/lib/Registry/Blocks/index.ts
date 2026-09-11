@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import registry from "../../../../registry.json";
 
 export interface RegistryBlockItem {
@@ -21,7 +23,31 @@ export interface FileTree {
   children?: FileTree[];
 }
 
-const typedRegistry = registry as RegistrySchema;
+const registryFileSchema = z.object({
+  path: z.string().min(1),
+  target: z.string().min(1).optional(),
+});
+
+const registryBlockItemSchema = z.object({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  files: z.array(registryFileSchema).optional(),
+  registryDependencies: z.array(z.string()).optional(),
+  categories: z.array(z.string()).optional(),
+  meta: z
+    .object({
+      iframeHeight: z.string().optional(),
+    })
+    .optional(),
+});
+
+const registrySchema = z.object({
+  items: z.array(registryBlockItemSchema),
+});
+
+const typedRegistry: RegistrySchema = registrySchema.parse(registry);
 
 // shadcn target placeholders (e.g. "@lib/") resolve to the consumer's aliases
 // at install time. For the docs file tree, show them as friendly folder names.
@@ -79,17 +105,19 @@ export function createFileTreeForRegistryItemFiles(
         if (isFile) {
           existingNode.path = filePath;
         } else {
-          currentLevel = existingNode.children!;
+          existingNode.children ??= [];
+          currentLevel = existingNode.children;
         }
       } else {
+        const children: FileTree[] = [];
         const newNode: FileTree = isFile
           ? { name: part, path: filePath }
-          : { name: part, children: [] };
+          : { name: part, children };
 
         currentLevel.push(newNode);
 
         if (!isFile) {
-          currentLevel = newNode.children!;
+          currentLevel = children;
         }
       }
     }

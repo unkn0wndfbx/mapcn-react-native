@@ -1,6 +1,7 @@
 import { GeoJSONSource, Layer } from "@maplibre/maplibre-react-native";
 import { useId } from "react";
 import { View } from "react-native";
+import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 
 import { Text } from "@/atoms/Text";
 import { Map } from "@/registry/map";
@@ -16,6 +17,43 @@ const HEATMAP_GRADIENT_COLORS = [
   "#d7301f",
 ];
 
+function HeatmapLegendBar() {
+  const gradientId = useId().replace(/:/g, "");
+  const lastIndex = HEATMAP_GRADIENT_COLORS.length - 1;
+
+  return (
+    <Svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 100 8"
+      preserveAspectRatio="none"
+    >
+      <Defs>
+        <LinearGradient
+          id={gradientId}
+          x1="0"
+          y1="0"
+          x2="1"
+          y2="0"
+        >
+          {HEATMAP_GRADIENT_COLORS.map((color, index) => (
+            <Stop
+              key={color}
+              offset={`${String((index / lastIndex) * 100)}%`}
+              stopColor={color}
+            />
+          ))}
+        </LinearGradient>
+      </Defs>
+      <Rect
+        width="100"
+        height="8"
+        fill={`url(#${gradientId})`}
+      />
+    </Svg>
+  );
+}
+
 function GlobeHeatmapLayers() {
   const id = useId();
   const sourceId = `heatmap-source-${id}`;
@@ -30,7 +68,7 @@ function GlobeHeatmapLayers() {
       <Layer
         id={heatLayerId}
         type="heatmap"
-        maxZoom={6}
+        maxzoom={6}
         paint={{
           "heatmap-weight": [
             "interpolate",
@@ -82,7 +120,7 @@ function GlobeHeatmapLayers() {
       <Layer
         id={pointLayerId}
         type="circle"
-        minZoom={4.5}
+        minzoom={4.5}
         paint={{
           "circle-radius": [
             "interpolate",
@@ -125,7 +163,7 @@ function GlobeHeatmapLayers() {
 
 export default function Page() {
   return (
-    <View className="bg-card relative h-screen flex-1">
+    <View className="bg-card relative flex-1">
       <View className="relative flex-1">
         <Map
           viewport={{
@@ -140,19 +178,13 @@ export default function Page() {
         </Map>
       </View>
 
-      <View className="bg-card/90 absolute top-4 left-4 z-10 rounded-lg border px-3 py-2.5">
+      <View className="bg-card/90 absolute top-4 right-4 left-4 z-10 max-w-72 rounded-lg  border-border px-3 py-2.5">
         <Text className="text-foreground text-sm font-medium">
           Global Earthquakes Heatmap
         </Text>
 
-        <View className="mt-3 h-2 w-full flex-row overflow-hidden rounded-full">
-          {HEATMAP_GRADIENT_COLORS.map((color) => (
-            <View
-              key={color}
-              className="flex-1"
-              style={{ backgroundColor: color }}
-            />
-          ))}
+        <View className="mt-3 h-2 w-full overflow-hidden rounded-full">
+          <HeatmapLegendBar />
         </View>
         <View className="flex-row items-center justify-between pt-1.5">
           <Text className="text-muted-foreground text-[10px]">Low</Text>

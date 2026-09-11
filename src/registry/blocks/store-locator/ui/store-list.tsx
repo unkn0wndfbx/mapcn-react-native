@@ -14,6 +14,7 @@ interface StoreListProps {
   onQueryChange: (value: string) => void;
   selectedId: string | null;
   onSelect: (id: string) => void;
+  compact?: boolean;
 }
 
 export function StoreList({
@@ -22,9 +23,16 @@ export function StoreList({
   onQueryChange,
   selectedId,
   onSelect,
+  compact = false,
 }: StoreListProps) {
   return (
-    <View className="bg-sidebar border-sidebar-border w-80 shrink-0 border-r">
+    <View
+      className={
+        compact
+          ? "bg-sidebar border-sidebar-border min-h-0 flex-1 border-t"
+          : "bg-sidebar border-sidebar-border w-80 shrink-0 border-r"
+      }
+    >
       <View className="gap-3 p-4">
         <View>
           <Text className="text-foreground text-lg font-semibold tracking-tight">
@@ -73,8 +81,10 @@ export function StoreList({
                     onSelect(store.id);
                   }}
                   accessibilityState={{ selected: active }}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${store.name}, ${store.openNow ? "open" : "closed"}`}
                   className={cn(
-                    "gap-0 rounded-md p-3",
+                    "min-h-12 gap-0 rounded-md p-3 active:opacity-70",
                     active && "bg-sidebar-accent",
                   )}
                 >

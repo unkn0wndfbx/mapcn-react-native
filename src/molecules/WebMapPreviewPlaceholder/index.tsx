@@ -15,7 +15,10 @@ import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { PlayStoreIcon } from "@/atoms/PlayStoreIcon";
 import { Text } from "@/atoms/Text";
-import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/Config/SiteMetadata";
+import {
+  SITE_APP_STORE_URL,
+  SITE_PLAY_STORE_URL,
+} from "@/lib/Config/SiteMetadata";
 import { THEME } from "@/lib/Config/Theme";
 import { cn } from "@/lib/Utils/Cn";
 
@@ -86,10 +89,11 @@ function PreviewImage({
           accessibilityLabel="Map preview screenshot"
         />
       ) : (
-        <View className="absolute inset-0 items-center justify-center text-muted-foreground">
+        <View className="h-full min-h-40 w-full items-center justify-center p-6">
           <Icon
             as={ImageIcon}
-            className="text-muted-foreground size-10 opacity-75"
+            size={40}
+            className="text-muted-foreground opacity-75"
           />
         </View>
       )}

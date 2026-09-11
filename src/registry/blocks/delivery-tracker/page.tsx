@@ -7,45 +7,49 @@ import {
   Utensils,
 } from "lucide-react-native";
 import { useEffect, useMemo, useState } from "react";
-import { useColorScheme, View } from "react-native";
+import {
+  ScrollView,
+  useColorScheme,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   buildRouteUrl,
   deliveryMeals,
   dropoff,
   mapView,
+  parseOsrmRoute,
   pickup,
   progressFraction,
   routeStyle,
   type OsrmRouteData,
 } from "./data";
+import { formatDistance, formatDuration } from "./utils";
 
 import { Badge } from "@/atoms/Badge";
 import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { Text } from "@/atoms/Text";
 import { Card, CardContent, CardHeader, CardTitle } from "@/molecules/Card";
-import { Map, MapMarker, MapRoute, MarkerContent } from "@/registry/map";
-
-function formatDistance(meters?: number) {
-  if (!meters) return "--";
-  if (meters < 1000) return `${Math.round(meters)} m`;
-  return `${(meters / 1000).toFixed(1)} km`;
-}
-
-function formatDuration(seconds?: number) {
-  if (!seconds) return "--";
-  const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  return `${hours}h ${remainingMinutes}m`;
-}
+import {
+  Map,
+  MapMarker,
+  MapRoute,
+  MarkerContent,
+  MarkerLabel,
+} from "@/registry/map";
 
 export default function Page() {
   const [routeData, setRouteData] = useState<OsrmRouteData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 768;
+  const pagePadding = isCompact ? 12 : 32;
   const remainingRouteColor =
     colorScheme === "dark"
       ? routeStyle.remaining.color.dark
@@ -54,19 +58,18 @@ export default function Page() {
   useEffect(() => {
     async function fetchRoute() {
       setLoading(true);
+      setError(null);
       try {
         const response = await fetch(buildRouteUrl(pickup, dropoff));
-        const data = await response.json();
-        const route = data?.routes?.[0];
-        if (!route?.geometry?.coordinates) return;
-
-        setRouteData({
-          coordinates: route.geometry.coordinates as [number, number][],
-          duration: route.duration as number,
-          distance: route.distance as number,
-        });
-      } catch (error) {
-        console.error("Failed to fetch route:", error);
+        const json = (await response.json()) as unknown;
+        const parsed = parseOsrmRoute(json);
+        if (!parsed) {
+          setError("Unable to load route data right now.");
+          return;
+        }
+        setRouteData(parsed);
+      } catch {
+        setError("Unable to load route data right now.");
       } finally {
         setLoading(false);
       }
@@ -84,9 +87,22 @@ export default function Page() {
   const courierPosition = progressCoordinates[progressCoordinates.length - 1];
 
   return (
-    <View className="min-h-screen flex-1 items-center justify-center p-8">
-      <View className="bg-sidebar w-full max-w-5xl flex-row overflow-hidden rounded-xl border">
-        <View className="flex-1 flex-col p-5 md:p-6">
+    <View
+      className="flex-1 items-center justify-center p-3 md:p-8"
+      style={{ paddingBottom: pagePadding + insets.bottom }}
+    >
+      <View
+        className={
+          isCompact
+            ? "bg-sidebar h-full w-full flex-col overflow-hidden rounded-xl border border-border"
+            : "bg-sidebar max-h-[720px] w-full max-w-5xl flex-row overflow-hidden rounded-xl border border-border"
+        }
+      >
+        <ScrollView
+          className={isCompact ? "min-h-0 flex-1" : "min-w-0 flex-1"}
+          contentContainerClassName="p-5 pb-8 md:p-6"
+          showsVerticalScrollIndicator={false}
+        >
           <View className="gap-1">
             <Text className="text-2xl font-semibold tracking-tight">
               Track Delivery
@@ -170,6 +186,12 @@ export default function Page() {
             </Card>
           </View>
 
+          {error ? (
+            <View className="mt-3">
+              <Text className="text-destructive text-xs">{error}</Text>
+            </View>
+          ) : null}
+
           <View className="mt-6 flex-row flex-wrap items-center gap-2">
             <Button size="sm">
               <Icon
@@ -189,9 +211,15 @@ export default function Page() {
               <Text>Contact courier</Text>
             </Button>
           </View>
-        </View>
+        </ScrollView>
 
-        <View className="relative h-[450px] min-w-0 flex-1 overflow-hidden rounded-xl shadow-sm">
+        <View
+          className={
+            isCompact
+              ? "relative h-[42%] min-h-72 w-full shrink-0 overflow-hidden border-t border-border"
+              : "relative min-h-[520px] min-w-0 flex-1 overflow-hidden"
+          }
+        >
           <Map
             loading={loading}
             viewport={{
@@ -226,7 +254,7 @@ export default function Page() {
               >
                 <MarkerContent>
                   <View
-                    className="relative size-9 items-center justify-center rounded-full shadow-md"
+                    className="size-9 items-center justify-center rounded-full shadow-md"
                     style={{ backgroundColor: routeStyle.progress.color }}
                   >
                     <Icon
@@ -234,12 +262,15 @@ export default function Page() {
                       size={16}
                       className="text-white"
                     />
-                    <View className="bg-popover border-border absolute bottom-full mb-2.5 rounded-md border px-2 py-1 shadow-md">
-                      <Text className="text-popover-foreground text-xs font-medium">
-                        {formatDuration(routeData?.duration)} away
-                      </Text>
-                    </View>
                   </View>
+                  <MarkerLabel className="bg-popover border-border mb-1.5 rounded-md border px-2 py-1 shadow-md">
+                    <Text
+                      className="text-popover-foreground text-xs font-medium"
+                      numberOfLines={1}
+                    >
+                      {formatDuration(routeData?.duration)} away
+                    </Text>
+                  </MarkerLabel>
                 </MarkerContent>
               </MapMarker>
             ) : null}

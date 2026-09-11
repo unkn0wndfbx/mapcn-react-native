@@ -165,6 +165,8 @@ type MapProps = Omit<
   viewport?: Partial<MapViewport>;
   onViewportChange?: (viewport: MapViewport) => void;
   loading?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 };
 
 function MapLoader() {
@@ -193,6 +195,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     style,
     onPress,
     dragPan = true,
+    minZoom,
+    maxZoom,
     ...props
   },
   ref,
@@ -205,7 +209,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const [camera, setCamera] = useState<CameraRef | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isStyleLoaded, setIsStyleLoaded] = useState(false);
-  const [nativeDragPan, setNativeDragPan] = useState(false);
   const internalUpdateRef = useRef(false);
   const onViewportChangeRef = useRef(onViewportChange);
   const mapPressListenersRef = useRef(new Set<MapPressListener>());
@@ -213,10 +216,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   useEffect(() => {
     onViewportChangeRef.current = onViewportChange;
   }, [onViewportChange]);
-
-  useEffect(() => {
-    setNativeDragPan(dragPan);
-  }, [dragPan]);
 
   const addMapPressListener = useCallback((listener: MapPressListener) => {
     mapPressListenersRef.current.add(listener);
@@ -341,7 +340,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
         <MapLibreMap
           androidView="texture"
           {...props}
-          dragPan={nativeDragPan}
+          dragPan={dragPan}
           ref={(instance) => {
             nativeMapRef.current = instance;
             setMap(instance);
@@ -372,6 +371,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
               cameraRef.current = instance;
               setCamera(instance);
             }}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
             {...(isControlled ? cameraState : { initialViewState })}
           />
           {isStyleLoaded ? children : null}
@@ -962,7 +963,11 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       },
       (error: unknown) => {
         clearTimeout(timer);
-        reject(error);
+        reject(
+          error instanceof Error
+            ? error
+            : new Error("Map operation failed", { cause: error }),
+        );
       },
     );
   });

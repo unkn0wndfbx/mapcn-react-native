@@ -8,8 +8,8 @@ import {
 } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 
-import { WebMapPreviewPlaceholder } from "@/molecules/WebMapPreviewPlaceholder";
 import { cn } from "@/lib/Utils/Cn";
+import { WebMapPreviewPlaceholder } from "@/molecules/WebMapPreviewPlaceholder";
 
 type Theme = "light" | "dark";
 
@@ -62,6 +62,8 @@ type MapProps = {
   viewport?: Partial<MapViewport>;
   onViewportChange?: (viewport: MapViewport) => void;
   loading?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 };
 
 const Map = forwardRef<MapRef, MapProps>(function Map(
