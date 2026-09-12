@@ -130,6 +130,8 @@ export function CodeBlock({
           ) : null}
           <ScrollView
             horizontal
+            nestedScrollEnabled
+            directionalLockEnabled
             className="min-w-0 flex-1"
             contentContainerClassName="min-w-full px-4 py-4"
             showsHorizontalScrollIndicator={false}
@@ -141,7 +143,7 @@ export function CodeBlock({
                   style={styles.line}
                 >
                   <Text
-                    selectable
+                    selectable={Platform.OS !== "android"}
                     className="text-foreground font-mono text-xs"
                   >
                     {line.map((token, tokenIndex) => (
