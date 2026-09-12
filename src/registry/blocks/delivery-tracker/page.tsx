@@ -9,7 +9,6 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
-  useColorScheme,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -39,21 +38,40 @@ import {
   MapRoute,
   MarkerContent,
   MarkerLabel,
+  useMap,
 } from "@/registry/map";
+
+function RemainingRoute({
+  coordinates,
+}: {
+  coordinates: [number, number][];
+}) {
+  const { resolvedTheme } = useMap();
+  const color =
+    resolvedTheme === "dark"
+      ? routeStyle.remaining.color.dark
+      : routeStyle.remaining.color.light;
+
+  return (
+    <MapRoute
+      id="delivery-full-route"
+      coordinates={coordinates}
+      color={color}
+      width={routeStyle.remaining.width}
+      opacity={routeStyle.remaining.opacity}
+      interactive={false}
+    />
+  );
+}
 
 export default function Page() {
   const [routeData, setRouteData] = useState<OsrmRouteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const isCompact = width < 768;
   const pagePadding = isCompact ? 12 : 32;
-  const remainingRouteColor =
-    colorScheme === "dark"
-      ? routeStyle.remaining.color.dark
-      : routeStyle.remaining.color.light;
 
   useEffect(() => {
     async function fetchRoute() {
@@ -229,14 +247,7 @@ export default function Page() {
             minZoom={mapView.minZoom}
             maxZoom={mapView.maxZoom}
           >
-            <MapRoute
-              id="delivery-full-route"
-              coordinates={routeData?.coordinates ?? []}
-              color={remainingRouteColor}
-              width={routeStyle.remaining.width}
-              opacity={routeStyle.remaining.opacity}
-              interactive={false}
-            />
+            <RemainingRoute coordinates={routeData?.coordinates ?? []} />
             <MapRoute
               id="delivery-progress-route"
               coordinates={progressCoordinates}

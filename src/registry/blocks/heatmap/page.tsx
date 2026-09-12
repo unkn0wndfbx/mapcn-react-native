@@ -85,7 +85,7 @@ function GlobeHeatmapLayers({
 }: {
   data: GeoJSON.FeatureCollection<GeoJSON.Point>;
 }) {
-  const { isLoaded, resolvedTheme } = useMap();
+  const { isLoaded } = useMap();
 
   if (!isLoaded) {
     return null;
@@ -93,12 +93,11 @@ function GlobeHeatmapLayers({
 
   return (
     <GeoJSONSource
-      key={resolvedTheme}
-      id={`heatmap-source-${resolvedTheme}`}
+      id="heatmap-source"
       data={data}
     >
       <Layer
-        id={`heatmap-layer-${resolvedTheme}`}
+        id="heatmap-layer"
         type="heatmap"
         maxzoom={6}
         paint={{
@@ -150,7 +149,7 @@ function GlobeHeatmapLayers({
         }}
       />
       <Layer
-        id={`heatmap-point-layer-${resolvedTheme}`}
+        id="heatmap-point-layer"
         type="circle"
         minzoom={4.5}
         paint={{

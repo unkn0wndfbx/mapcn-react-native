@@ -12,7 +12,8 @@
         "@maplibre/maplibre-react-native",
         "@types/geojson",
         "lucide-react-native",
-        "react-native-svg"
+        "react-native-svg",
+        "zod"
       ],
       "registryDependencies": [
         "https://reactnativereusables.com/r/nativewind/text.json"
@@ -224,7 +225,7 @@
       "type": "registry:block",
       "title": "Uptime Monitor",
       "description": "Status-page style map of edge network locations with live health, latency, and uptime.",
-      "dependencies": [],
+      "dependencies": ["zod"],
       "registryDependencies": [
         "https://raw.githubusercontent.com/unkn0wndfbx/mapcn-react-native/main/public/r/map.json"
       ],

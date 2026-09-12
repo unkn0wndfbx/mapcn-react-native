@@ -17,7 +17,10 @@ export default function Page() {
   return (
     <View className="flex-1 items-center justify-center p-4 md:p-8">
       <Card className="relative aspect-video w-full max-w-md overflow-hidden py-0">
-        <View className="absolute inset-0">
+        <View
+          className="absolute inset-0"
+          collapsable={false}
+        >
           <Map
             blank
             viewport={{ center: [1, 30], zoom: 1 }}

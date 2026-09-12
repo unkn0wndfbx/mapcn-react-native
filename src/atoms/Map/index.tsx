@@ -46,6 +46,7 @@ import {
   type NativeSyntheticEvent,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { z } from "zod";
 
 import { Icon } from "@/atoms/Icon";
 import { TextClassContext } from "@/atoms/Text";
@@ -58,6 +59,7 @@ const defaultStyles = {
 
 const blankMapStyle: StyleSpecification = {
   version: 8,
+  transition: { duration: 0, delay: 0 },
   sources: {},
   layers: [
     {
@@ -68,10 +70,18 @@ const blankMapStyle: StyleSpecification = {
   ],
 };
 
+const INSTANT_PAINT_TRANSITION = { duration: 0, delay: 0 };
+const THEME_REVERT_IGNORE_MS = 600;
+
 function useStableValue<T>(value: T): T {
   const key = useMemo(() => JSON.stringify(value) ?? "", [value]);
 
   return useMemo(() => value, [key]);
+}
+
+function toLayerId(id: string): string {
+  const sanitized = id.replace(/[^A-Za-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "");
+  return sanitized.length > 0 ? sanitized : "geojson";
 }
 
 function mergeSelectedPaint<T extends Record<string, unknown>>(
@@ -170,9 +180,68 @@ type MapProps = Omit<
   maxZoom?: number;
 };
 
-function MapLoader() {
+function useLatchedTheme(themeOverride: Theme | undefined): Theme {
+  const colorScheme = useColorScheme();
+  const [latchedTheme, setLatchedTheme] = useState<Theme>(() =>
+    colorScheme === "dark" ? "dark" : "light",
+  );
+  const previousThemeRef = useRef(latchedTheme);
+  const ignoreRevertUntilRef = useRef(0);
+
+  const systemTheme: Theme =
+    colorScheme === "dark" || colorScheme === "light"
+      ? colorScheme
+      : latchedTheme;
+
+  useEffect(() => {
+    if (themeOverride === "dark" || themeOverride === "light") {
+      return;
+    }
+
+    if (systemTheme === latchedTheme) {
+      return;
+    }
+
+    const now = Date.now();
+    const isRevert =
+      now < ignoreRevertUntilRef.current &&
+      systemTheme === previousThemeRef.current;
+
+    if (isRevert) {
+      const timeout = setTimeout(() => {
+        setLatchedTheme((current) => {
+          if (current === systemTheme) {
+            return current;
+          }
+          previousThemeRef.current = current;
+          ignoreRevertUntilRef.current = Date.now() + THEME_REVERT_IGNORE_MS;
+          return systemTheme;
+        });
+      }, ignoreRevertUntilRef.current - now);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+
+    previousThemeRef.current = latchedTheme;
+    ignoreRevertUntilRef.current = now + THEME_REVERT_IGNORE_MS;
+    setLatchedTheme(systemTheme);
+  }, [latchedTheme, systemTheme, themeOverride]);
+
+  if (themeOverride === "dark" || themeOverride === "light") {
+    return themeOverride;
+  }
+  return latchedTheme;
+}
+
+function MapLoader({ opaque = false }: { opaque?: boolean }) {
   return (
-    <View className="bg-background/50 absolute inset-0 z-10 items-center justify-center">
+    <View
+      className={cn(
+        "absolute inset-0 z-10 items-center justify-center",
+        opaque ? "bg-background" : "bg-background/50",
+      )}
+    >
       <View className="flex-row gap-1">
         <View className="bg-muted-foreground/60 size-1.5 rounded-full opacity-60" />
         <View className="bg-muted-foreground/60 size-1.5 rounded-full opacity-80" />
@@ -202,8 +271,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   },
   ref,
 ) {
-  const systemTheme = useColorScheme() === "dark" ? "dark" : "light";
-  const resolvedTheme = theme ?? systemTheme;
+  const resolvedTheme = useLatchedTheme(theme);
   const nativeMapRef = useRef<MapRef>(null);
   const cameraRef = useRef<CameraRef>(null);
   const [map, setMap] = useState<MapRef | null>(null);
@@ -213,6 +281,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     null,
   );
   const [styleEpoch, setStyleEpoch] = useState(0);
+  const loadedStyleRef = useRef<MapStyleOption | null>(null);
+  const flushedEpochRef = useRef<number | null>(null);
   const internalUpdateRef = useRef(false);
   const onViewportChangeRef = useRef(onViewportChange);
   const mapPressListenersRef = useRef(new Set<MapPressListener>());
@@ -263,7 +333,23 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   }, [stableStyles, blank]);
 
   const mapStyle = resolvedTheme === "dark" ? mapStyles.dark : mapStyles.light;
+  const [nativeMapStyle, setNativeMapStyle] = useState(mapStyle);
   const isStyleLoaded = loadedMapStyle === mapStyle;
+  const isSwitchingStyle =
+    loadedMapStyle !== null && loadedMapStyle !== mapStyle;
+
+  useEffect(() => {
+    setNativeMapStyle(mapStyle);
+  }, [mapStyle]);
+
+  const handleDidFinishLoadingStyle = useCallback(() => {
+    if (loadedStyleRef.current === nativeMapStyle) {
+      return;
+    }
+    loadedStyleRef.current = nativeMapStyle;
+    setLoadedMapStyle(nativeMapStyle);
+    setStyleEpoch((epoch) => epoch + 1);
+  }, [nativeMapStyle]);
 
   useImperativeHandle(ref, () => {
     if (!nativeMapRef.current) {
@@ -315,6 +401,25 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     };
   }, [camera, currentViewport, isControlled, viewport]);
 
+  useEffect(() => {
+    if (!camera || !isLoaded || !isStyleLoaded) return;
+    if (flushedEpochRef.current === styleEpoch) return;
+    flushedEpochRef.current = styleEpoch;
+    internalUpdateRef.current = true;
+    camera.jumpTo({
+      center: cameraState.center,
+      zoom: cameraState.zoom,
+      bearing: cameraState.bearing,
+      pitch: cameraState.pitch,
+    });
+    const timeout = setTimeout(() => {
+      internalUpdateRef.current = false;
+    }, 50);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [camera, cameraState, isLoaded, isStyleLoaded, styleEpoch]);
+
   const contextValue = useMemo(
     () => ({
       camera,
@@ -337,7 +442,10 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
   return (
     <MapContext.Provider value={contextValue}>
-      <View className={cn("relative flex-1", className)}>
+      <View
+        collapsable={false}
+        className={cn("relative flex-1", className)}
+      >
         <MapLibreMap
           androidView="texture"
           {...props}
@@ -346,14 +454,11 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
             nativeMapRef.current = instance;
             setMap(instance);
           }}
-          mapStyle={mapStyle}
+          mapStyle={nativeMapStyle}
           onDidFinishLoadingMap={() => {
             setIsLoaded(true);
           }}
-          onDidFinishLoadingStyle={() => {
-            setLoadedMapStyle(mapStyle);
-            setStyleEpoch((epoch) => epoch + 1);
-          }}
+          onDidFinishLoadingStyle={handleDidFinishLoadingStyle}
           onPress={handleMapPress}
           onRegionIsChanging={(event) => {
             if (internalUpdateRef.current) return;
@@ -377,11 +482,13 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
             maxZoom={maxZoom}
             {...(isControlled ? cameraState : { initialViewState })}
           />
-          {isStyleLoaded ? (
+          {isLoaded && loadedMapStyle !== null ? (
             <Fragment key={styleEpoch}>{children}</Fragment>
           ) : null}
         </MapLibreMap>
-        {!isLoaded || !isStyleLoaded || loading ? <MapLoader /> : null}
+        {!isLoaded || !isStyleLoaded || loading ? (
+          <MapLoader opaque={isSwitchingStyle} />
+        ) : null}
       </View>
     </MapContext.Provider>
   );
@@ -1273,6 +1380,8 @@ function MapRoute({
           "line-opacity": opacity,
           ...(dashArray ? { "line-dasharray": dashArray } : {}),
           ...linePaint,
+          "line-color-transition": INSTANT_PAINT_TRANSITION,
+          "line-opacity-transition": INSTANT_PAINT_TRANSITION,
         }}
         type="line"
       />
@@ -1332,6 +1441,133 @@ const GEOJSON_DEFAULT_COLORS = {
   dark: { fill: "#404040", line: "#171717" },
 } satisfies Record<Theme, { fill: string; line: string }>;
 
+const EMPTY_GEOJSON_COLLECTION: GeoJSON.FeatureCollection = {
+  type: "FeatureCollection",
+  features: [],
+};
+
+const geoJsonUrlSchema = z
+  .object({
+    type: z.literal("FeatureCollection"),
+    features: z.array(
+      z
+        .object({
+          type: z.literal("Feature"),
+          properties: z.record(z.string(), z.unknown()).nullable().optional(),
+          geometry: z.unknown().nullable(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+const geoJsonUrlCache = new globalThis.Map<string, GeoJSON.FeatureCollection>();
+const geoJsonUrlInflight = new globalThis.Map<
+  string,
+  Promise<GeoJSON.FeatureCollection>
+>();
+
+function isGeoJsonGeometry(value: unknown): value is GeoJSON.Geometry {
+  if (typeof value !== "object" || value === null) return false;
+  if (!("type" in value) || typeof value.type !== "string") return false;
+  switch (value.type) {
+    case "Point":
+    case "MultiPoint":
+    case "LineString":
+    case "MultiLineString":
+    case "Polygon":
+    case "MultiPolygon":
+    case "GeometryCollection":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function parseGeoJsonUrlPayload(input: unknown): GeoJSON.FeatureCollection {
+  const parsed = geoJsonUrlSchema.parse(input);
+  const features: GeoJSON.Feature[] = [];
+  for (const feature of parsed.features) {
+    if (!isGeoJsonGeometry(feature.geometry)) {
+      continue;
+    }
+    features.push({
+      type: "Feature",
+      properties: feature.properties ?? null,
+      geometry: feature.geometry,
+    });
+  }
+  return {
+    type: "FeatureCollection",
+    features,
+  };
+}
+
+function loadGeoJsonUrl(url: string): Promise<GeoJSON.FeatureCollection> {
+  const cached = geoJsonUrlCache.get(url);
+  if (cached) return Promise.resolve(cached);
+
+  const inflight = geoJsonUrlInflight.get(url);
+  if (inflight) return inflight;
+
+  const request = fetch(url)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load GeoJSON (${String(response.status)})`);
+      }
+      const collection = parseGeoJsonUrlPayload(await response.json());
+      geoJsonUrlCache.set(url, collection);
+      geoJsonUrlInflight.delete(url);
+      return collection;
+    })
+    .catch((error: unknown) => {
+      geoJsonUrlInflight.delete(url);
+      throw error;
+    });
+
+  geoJsonUrlInflight.set(url, request);
+  return request;
+}
+
+function useResolvedGeoJsonData(
+  data: MapGeoJSONData,
+): GeoJSON.FeatureCollection | GeoJSON.Feature | GeoJSON.Geometry {
+  const [resolved, setResolved] = useState<
+    GeoJSON.FeatureCollection | GeoJSON.Feature | GeoJSON.Geometry
+  >(() => {
+    if (typeof data !== "string") return data;
+    return geoJsonUrlCache.get(data) ?? EMPTY_GEOJSON_COLLECTION;
+  });
+
+  useEffect(() => {
+    if (typeof data !== "string") {
+      setResolved(data);
+      return;
+    }
+
+    const cached = geoJsonUrlCache.get(data);
+    if (cached) {
+      setResolved(cached);
+      return;
+    }
+
+    let active = true;
+    void loadGeoJsonUrl(data)
+      .then((collection) => {
+        if (active) setResolved(collection);
+      })
+      .catch(() => {
+        if (active) setResolved(EMPTY_GEOJSON_COLLECTION);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [data]);
+
+  return resolved;
+}
+
 function MapGeoJSON<
   P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonProperties,
 >({
@@ -1348,14 +1584,15 @@ function MapGeoJSON<
 }: MapGeoJSONProps<P>) {
   const { resolvedTheme } = useMap();
   const autoId = useId();
-  const id = propId ?? autoId;
+  const id = toLayerId(propId ?? autoId);
   const defaults = GEOJSON_DEFAULT_COLORS[resolvedTheme];
   const showFill = fillPaint !== false;
   const showLine = linePaint !== false;
+  const resolvedData = useResolvedGeoJsonData(data);
 
   const mergedFillPaint = useMemo(
-    () =>
-      mergeSelectedPaint(
+    () => ({
+      ...mergeSelectedPaint(
         {
           "fill-color": defaults.fill,
           ...(fillPaint === false ? {} : (fillPaint ?? {})),
@@ -1364,6 +1601,9 @@ function MapGeoJSON<
         promoteId,
         selectedId,
       ),
+      "fill-color-transition": INSTANT_PAINT_TRANSITION,
+      "fill-opacity-transition": INSTANT_PAINT_TRANSITION,
+    }),
     [defaults.fill, fillPaint, promoteId, selectedId, selectedPaint],
   );
   const mergedLinePaint = useMemo(
@@ -1371,6 +1611,8 @@ function MapGeoJSON<
       "line-color": defaults.line,
       "line-width": 0.5,
       ...(linePaint === false ? {} : (linePaint ?? {})),
+      "line-color-transition": INSTANT_PAINT_TRANSITION,
+      "line-opacity-transition": INSTANT_PAINT_TRANSITION,
     }),
     [defaults.line, linePaint],
   );
@@ -1390,7 +1632,7 @@ function MapGeoJSON<
 
   return (
     <GeoJSONSource
-      data={data}
+      data={resolvedData}
       id={`geojson-${id}`}
       onPress={interactive ? handlePress : undefined}
     >
@@ -1459,6 +1701,8 @@ const DEFAULT_ARC_PAINT: MapArcLinePaint = {
   "line-color": "#4285F4",
   "line-width": 2,
   "line-opacity": 0.85,
+  "line-color-transition": INSTANT_PAINT_TRANSITION,
+  "line-opacity-transition": INSTANT_PAINT_TRANSITION,
 };
 
 const DEFAULT_ARC_LAYOUT: MapArcLineLayout = {
@@ -1540,13 +1784,16 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
   );
 
   const mergedPaint = useMemo(
-    () =>
-      mergeSelectedPaint(
+    () => ({
+      ...mergeSelectedPaint(
         { ...DEFAULT_ARC_PAINT, ...shortcutPaint, ...paint },
         selectedPaint,
         "id",
         selectedId,
       ),
+      "line-color-transition": INSTANT_PAINT_TRANSITION,
+      "line-opacity-transition": INSTANT_PAINT_TRANSITION,
+    }),
     [paint, selectedId, selectedPaint, shortcutPaint],
   );
   const mergedLayout = useMemo(
