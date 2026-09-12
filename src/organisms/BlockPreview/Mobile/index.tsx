@@ -54,12 +54,13 @@ export function MobileBlockPreview({
 }: MobileBlockPreviewProps) {
   if (Platform.OS === "web") {
     return (
-      <View className="h-full w-full justify-center">
+      <View className="h-full w-full overflow-hidden p-2">
         <WebMapPreviewPlaceholder
           title={title}
           previewImage={previewImage}
           previewImageDark={previewImageDark}
           layout="aside"
+          previewShape="portrait"
         />
       </View>
     );

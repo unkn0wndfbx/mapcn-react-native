@@ -55,7 +55,7 @@ export function StoreList({
             value={query}
             onChangeText={onQueryChange}
             placeholder="Search name or address"
-            className="bg-background pl-8"
+            className="bg-muted dark:bg-muted/50 pl-8"
             accessibilityLabel="Search stores"
           />
         </View>

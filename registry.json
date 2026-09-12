@@ -260,7 +260,7 @@
       "type": "registry:block",
       "title": "Heatmap",
       "description": "Globe-projected heatmap visualizing earthquake density with zoom-dependent styling.",
-      "dependencies": ["@maplibre/maplibre-react-native"],
+      "dependencies": ["@maplibre/maplibre-react-native", "zod"],
       "registryDependencies": [
         "https://raw.githubusercontent.com/unkn0wndfbx/mapcn-react-native/main/public/r/map.json",
         "https://reactnativereusables.com/r/nativewind/text.json"
@@ -270,6 +270,11 @@
           "path": "src/registry/blocks/heatmap/page.tsx",
           "type": "registry:component",
           "target": "app/heatmap/page.tsx"
+        },
+        {
+          "path": "src/registry/blocks/heatmap/utils.ts",
+          "type": "registry:lib",
+          "target": "app/heatmap/utils.ts"
         }
       ],
       "categories": ["visualization", "heatmap"],

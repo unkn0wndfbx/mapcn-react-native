@@ -30,8 +30,16 @@ export const SITE_KEYWORDS = [
   "map controls",
 ];
 
+export const SITE_AUTHOR = {
+  name: "THDev",
+  url: "https://www.titouan-helbert.com/",
+  role: "Freelance Next.js & React Native",
+  avatarUrl: "https://avatars.githubusercontent.com/u/83207708?s=128&v=4",
+  initials: "TH",
+} as const;
+
 export const SITE_AUTHORS = [
-  { name: "unkn0wndfbx", url: "https://github.com/unkn0wndfbx" },
+  { name: SITE_AUTHOR.name, url: SITE_AUTHOR.url },
 ] as const;
 
 export const SITE_OG_IMAGE = {

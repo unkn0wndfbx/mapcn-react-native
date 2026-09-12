@@ -1,13 +1,12 @@
 import { GeoJSONSource, Layer } from "@maplibre/maplibre-react-native";
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { View } from "react-native";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 
-import { Text } from "@/atoms/Text";
-import { Map } from "@/registry/map";
+import { loadEarthquakeGeoJSON } from "./utils";
 
-const EARTHQUAKE_GEOJSON_URL =
-  "https://maplibre.org/maplibre-gl-js/docs/assets/earthquakes.geojson";
+import { Text } from "@/atoms/Text";
+import { Map, useMap } from "@/registry/map";
 
 const HEATMAP_GRADIENT_COLORS = [
   "#fff7bc",
@@ -16,6 +15,33 @@ const HEATMAP_GRADIENT_COLORS = [
   "#fe9929",
   "#d7301f",
 ];
+
+function useEarthquakeData() {
+  const [data, setData] =
+    useState<GeoJSON.FeatureCollection<GeoJSON.Point> | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadEarthquakeGeoJSON()
+      .then((collection) => {
+        if (active) {
+          setData(collection);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setData(null);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return data;
+}
 
 function HeatmapLegendBar() {
   const gradientId = useId().replace(/:/g, "");
@@ -54,19 +80,25 @@ function HeatmapLegendBar() {
   );
 }
 
-function GlobeHeatmapLayers() {
-  const id = useId();
-  const sourceId = `heatmap-source-${id}`;
-  const heatLayerId = `heatmap-layer-${id}`;
-  const pointLayerId = `heatmap-point-layer-${id}`;
+function GlobeHeatmapLayers({
+  data,
+}: {
+  data: GeoJSON.FeatureCollection<GeoJSON.Point>;
+}) {
+  const { isLoaded, resolvedTheme } = useMap();
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <GeoJSONSource
-      id={sourceId}
-      data={EARTHQUAKE_GEOJSON_URL}
+      key={resolvedTheme}
+      id={`heatmap-source-${resolvedTheme}`}
+      data={data}
     >
       <Layer
-        id={heatLayerId}
+        id={`heatmap-layer-${resolvedTheme}`}
         type="heatmap"
         maxzoom={6}
         paint={{
@@ -118,7 +150,7 @@ function GlobeHeatmapLayers() {
         }}
       />
       <Layer
-        id={pointLayerId}
+        id={`heatmap-point-layer-${resolvedTheme}`}
         type="circle"
         minzoom={4.5}
         paint={{
@@ -162,6 +194,8 @@ function GlobeHeatmapLayers() {
 }
 
 export default function Page() {
+  const data = useEarthquakeData();
+
   return (
     <View className="bg-card relative flex-1">
       <View className="relative flex-1">
@@ -173,8 +207,9 @@ export default function Page() {
           }}
           minZoom={1.2}
           maxZoom={8}
+          loading={!data}
         >
-          <GlobeHeatmapLayers />
+          {data ? <GlobeHeatmapLayers data={data} /> : null}
         </Map>
       </View>
 

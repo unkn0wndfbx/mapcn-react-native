@@ -24,6 +24,7 @@ import {
   cloneElement,
   createContext,
   forwardRef,
+  Fragment,
   isValidElement,
   useCallback,
   useContext,
@@ -208,7 +209,10 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const [map, setMap] = useState<MapRef | null>(null);
   const [camera, setCamera] = useState<CameraRef | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isStyleLoaded, setIsStyleLoaded] = useState(false);
+  const [loadedMapStyle, setLoadedMapStyle] = useState<MapStyleOption | null>(
+    null,
+  );
+  const [styleEpoch, setStyleEpoch] = useState(0);
   const internalUpdateRef = useRef(false);
   const onViewportChangeRef = useRef(onViewportChange);
   const mapPressListenersRef = useRef(new Set<MapPressListener>());
@@ -259,6 +263,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   }, [stableStyles, blank]);
 
   const mapStyle = resolvedTheme === "dark" ? mapStyles.dark : mapStyles.light;
+  const isStyleLoaded = loadedMapStyle === mapStyle;
 
   useImperativeHandle(ref, () => {
     if (!nativeMapRef.current) {
@@ -310,10 +315,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     };
   }, [camera, currentViewport, isControlled, viewport]);
 
-  useEffect(() => {
-    setIsStyleLoaded(false);
-  }, [mapStyle]);
-
   const contextValue = useMemo(
     () => ({
       camera,
@@ -350,7 +351,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
             setIsLoaded(true);
           }}
           onDidFinishLoadingStyle={() => {
-            setIsStyleLoaded(true);
+            setLoadedMapStyle(mapStyle);
+            setStyleEpoch((epoch) => epoch + 1);
           }}
           onPress={handleMapPress}
           onRegionIsChanging={(event) => {
@@ -375,7 +377,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
             maxZoom={maxZoom}
             {...(isControlled ? cameraState : { initialViewState })}
           />
-          {isStyleLoaded ? children : null}
+          {isStyleLoaded ? (
+            <Fragment key={styleEpoch}>{children}</Fragment>
+          ) : null}
         </MapLibreMap>
         {!isLoaded || !isStyleLoaded || loading ? <MapLoader /> : null}
       </View>

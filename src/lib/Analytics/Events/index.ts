@@ -4,7 +4,8 @@ type EventName =
   | "copy_install_command"
   | "copy_block_cli"
   | "copy_block_code"
-  | "copy_agent_prompt";
+  | "copy_agent_prompt"
+  | "open_author_portfolio";
 
 type AllowedPropertyValues = string | number | boolean | null;
 

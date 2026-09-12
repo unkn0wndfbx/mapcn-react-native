@@ -84,7 +84,7 @@ function MobileNavSheet({ onClose }: { onClose: () => void }) {
                 </View>
 
                 <ScrollView
-                  className="px-2"
+                  className="flex-1 px-2"
                   contentContainerClassName="gap-6 pb-4"
                   showsVerticalScrollIndicator={false}
                 >
@@ -110,6 +110,13 @@ function MobileNavSheet({ onClose }: { onClose: () => void }) {
                     </View>
                   ))}
                 </ScrollView>
+                {/* <View className="border-border border-t px-3 py-3">
+                  <PortfolioShoutOut
+                    variant="card"
+                    placement="mobile_nav"
+                    className="max-w-none"
+                  />
+                </View> */}
               </View>
             </NativeOnlyAnimatedView>
           </DialogPrimitive.Content>

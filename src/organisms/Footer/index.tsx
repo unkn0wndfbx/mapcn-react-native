@@ -1,12 +1,12 @@
-import { type Href, useRouter } from "expo-router";
+import { Link, type Href } from "expo-router";
 import type { LucideProps } from "lucide-react-native";
 import { Pressable, useColorScheme, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import { Text } from "@/atoms/Text";
-import { openExternalUrl } from "@/lib/Platform/Link";
 import { SITE_GITHUB_REPO } from "@/lib/Config/SiteMetadata";
 import { THEME } from "@/lib/Config/Theme";
+import { openExternalUrl } from "@/lib/Platform/Link";
 import { cn } from "@/lib/Utils/Cn";
 import { Logo } from "@/molecules/Logo";
 import { PrivacyPolicyLink } from "@/molecules/PrivacyPolicyLink";
@@ -95,25 +95,33 @@ type FooterLinkItem = {
 };
 
 function FooterLink({ label, href, external }: FooterLinkItem) {
-  const router = useRouter();
   const linkClassName = "text-muted-foreground active:text-foreground text-sm";
   const isExternal =
     external ?? (typeof href === "string" && href.startsWith("http"));
 
-  return (
-    <Text
-      accessibilityRole="link"
-      className={linkClassName}
-      onPress={() => {
-        if (isExternal) {
-          openExternalUrl(href as string);
-        }
+  if (isExternal && typeof href === "string") {
+    return (
+      <Text
+        accessibilityRole="link"
+        className={linkClassName}
+        onPress={() => {
+          openExternalUrl(href);
+        }}
+      >
+        {label}
+      </Text>
+    );
+  }
 
-        router.push(href);
-      }}
+  return (
+    <Link
+      href={href}
+      asChild
     >
-      {label}
-    </Text>
+      <Pressable accessibilityRole="link">
+        <Text className={linkClassName}>{label}</Text>
+      </Pressable>
+    </Link>
   );
 }
 
@@ -188,6 +196,10 @@ export function Footer({ className }: FooterProps) {
                 </Pressable>
               ))}
             </View>
+            {/* <PortfolioShoutOut
+              variant="card"
+              placement="footer"
+            /> */}
           </View>
 
           <View className="flex-row flex-wrap gap-8">
