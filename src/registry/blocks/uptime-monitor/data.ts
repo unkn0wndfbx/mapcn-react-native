@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type EdgeStatus = "operational" | "degraded" | "down";
 
 export interface EdgeNode {
@@ -29,6 +31,74 @@ export const statusMeta: Record<EdgeStatus, { dot: string; text: string }> = {
 /** Country borders served from a public CDN - swap in your own GeoJSON. */
 export const WORLD_GEOJSON =
   "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@v5.1.2/geojson/ne_110m_admin_0_countries.geojson";
+
+const worldGeoJsonSchema = z
+  .object({
+    type: z.literal("FeatureCollection"),
+    features: z.array(
+      z
+        .object({
+          type: z.literal("Feature"),
+          properties: z.record(z.string(), z.unknown()).nullable().optional(),
+          geometry: z.unknown().nullable(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+function isGeoJsonGeometry(value: unknown): value is GeoJSON.Geometry {
+  if (typeof value !== "object" || value === null) return false;
+  if (!("type" in value) || typeof value.type !== "string") return false;
+  switch (value.type) {
+    case "Point":
+    case "MultiPoint":
+    case "LineString":
+    case "MultiLineString":
+    case "Polygon":
+    case "MultiPolygon":
+    case "GeometryCollection":
+      return true;
+    default:
+      return false;
+  }
+}
+
+let cachedWorldGeoJson: GeoJSON.FeatureCollection | undefined;
+
+export function loadWorldGeoJSON(): Promise<GeoJSON.FeatureCollection> {
+  if (cachedWorldGeoJson) {
+    return Promise.resolve(cachedWorldGeoJson);
+  }
+
+  return fetch(WORLD_GEOJSON).then(async (response) => {
+    if (!response.ok) {
+      throw new Error(
+        `Failed to load world GeoJSON (${String(response.status)})`,
+      );
+    }
+
+    const parsed = worldGeoJsonSchema.parse(await response.json());
+    const features: GeoJSON.Feature[] = [];
+    for (const feature of parsed.features) {
+      if (!isGeoJsonGeometry(feature.geometry)) {
+        continue;
+      }
+      features.push({
+        type: "Feature",
+        properties: feature.properties ?? null,
+        geometry: feature.geometry,
+      });
+    }
+
+    const collection: GeoJSON.FeatureCollection = {
+      type: "FeatureCollection",
+      features,
+    };
+    cachedWorldGeoJson = collection;
+    return collection;
+  });
+}
 
 export const mapView = {
   center: [5, 28] as [number, number],

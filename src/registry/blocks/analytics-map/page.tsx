@@ -34,6 +34,7 @@ export default function Page() {
     >
       <View
         className="bg-card relative border-b border-border"
+        collapsable={false}
         style={{ height: MAP_HEIGHT }}
       >
         <Map

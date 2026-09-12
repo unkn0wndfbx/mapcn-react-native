@@ -37,6 +37,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/molecules/Collapsible";
+import { useLockParentScrollOnMapTouch } from "@/providers/ParentScrollLock";
 
 export interface HighlightedFile {
   path: string;
@@ -88,6 +89,7 @@ export function BlockViewerCode({
     () => highlightedFiles.find((f) => f.target === activeFile),
     [highlightedFiles, activeFile],
   );
+  const lockParentScroll = useLockParentScrollOnMapTouch();
 
   React.useEffect(() => {
     setTreeOpen(!isCompact);
@@ -119,6 +121,7 @@ export function BlockViewerCode({
       <View
         className="relative overflow-hidden rounded-xl border border-border"
         style={{ height }}
+        {...lockParentScroll}
       >
         <View className="min-h-0 flex-1 flex-row">
           {isCompact ? null : (
@@ -315,7 +318,10 @@ function FileTreeSidebar() {
           </Button>
         ) : null}
       </View>
-      <ScrollView contentContainerClassName="py-1.5">
+      <ScrollView
+        nestedScrollEnabled
+        contentContainerClassName="py-1.5"
+      >
         {tree.map((file) => (
           <TreeNode
             key={file.path ?? file.name}

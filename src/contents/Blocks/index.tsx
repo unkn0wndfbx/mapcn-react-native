@@ -14,6 +14,7 @@ export function BlocksPage() {
 
   return (
     <ScrollPageLayout
+      lockParentScroll
       header={
         <PageHeader
           align="left"

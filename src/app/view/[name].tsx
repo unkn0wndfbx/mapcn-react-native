@@ -1,7 +1,7 @@
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { Suspense } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { Suspense, useEffect, useState } from "react";
+import { ActivityIndicator, View, type LayoutChangeEvent } from "react-native";
 import { z } from "zod";
 
 import { Button } from "@/atoms/Button";
@@ -20,18 +20,53 @@ const blockNameSchema = z.enum([
   "uptime-monitor",
 ]);
 
+function BlockFallback() {
+  return (
+    <View className="flex-1 items-center justify-center">
+      <ActivityIndicator />
+    </View>
+  );
+}
+
 export default function BlockViewPage() {
   const router = useRouter();
   const { name } = useLocalSearchParams<{
     name?: string | string[];
   }>();
   const parsedName = blockNameSchema.safeParse(name);
+  const [screenSettled, setScreenSettled] = useState(false);
+  const [hasLayout, setHasLayout] = useState(false);
+
+  useEffect(() => {
+    let settled = false;
+    setScreenSettled(false);
+
+    function markSettled() {
+      if (settled) return;
+      settled = true;
+      setScreenSettled(true);
+    }
+
+    const idleId = requestIdleCallback(markSettled);
+
+    return () => {
+      settled = true;
+      cancelIdleCallback(idleId);
+    };
+  }, [name]);
+
+  function handleLayout(event: LayoutChangeEvent) {
+    const { width, height } = event.nativeEvent.layout;
+    if (width <= 0 || height <= 0) return;
+    setHasLayout((prev) => (prev ? prev : true));
+  }
 
   if (!parsedName.success) {
     return <Redirect href="/+not-found" />;
   }
 
   const Component = blockComponents[parsedName.data];
+  const ready = screenSettled && hasLayout;
 
   function goBack() {
     if (router.canGoBack()) {
@@ -48,6 +83,7 @@ export default function BlockViewPage() {
         flex: 1,
       }}
       className="bg-background"
+      onLayout={handleLayout}
     >
       <View
         pointerEvents="box-none"
@@ -67,15 +103,13 @@ export default function BlockViewPage() {
           <Text>Back</Text>
         </Button>
       </View>
-      <Suspense
-        fallback={
-          <View className="flex-1 items-center justify-center">
-            <ActivityIndicator />
-          </View>
-        }
-      >
-        <Component />
-      </Suspense>
+      {ready ? (
+        <Suspense fallback={<BlockFallback />}>
+          <Component />
+        </Suspense>
+      ) : (
+        <BlockFallback />
+      )}
     </View>
   );
 }
