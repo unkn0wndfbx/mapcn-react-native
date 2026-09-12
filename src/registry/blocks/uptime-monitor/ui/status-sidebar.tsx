@@ -7,15 +7,22 @@ import { cn } from "@/lib/Utils/Cn";
 
 interface StatusSidebarProps {
   nodes: EdgeNode[];
+  compact?: boolean;
 }
 
-export function StatusSidebar({ nodes }: StatusSidebarProps) {
+export function StatusSidebar({ nodes, compact = false }: StatusSidebarProps) {
   const summary = getNetworkSummary(nodes);
   const summaryMeta = statusMeta[summary.status];
 
   return (
-    <View className="bg-card w-56 shrink-0 flex-col overflow-hidden border-r">
-      <View className="border-b p-3">
+    <View
+      className={
+        compact
+          ? "bg-card min-h-0 flex-1 flex-col overflow-hidden border-t border-border"
+          : "bg-card w-56 shrink-0 flex-col overflow-hidden border-r border-border"
+      }
+    >
+      <View className="border-b border-border p-3">
         <Text className="text-foreground text-sm font-semibold">
           Edge Network
         </Text>
@@ -28,7 +35,7 @@ export function StatusSidebar({ nodes }: StatusSidebarProps) {
         </View>
 
         <View className="mt-3 flex-row gap-2">
-          <View className="bg-background/60 flex-1 rounded-md border p-2">
+          <View className="bg-background/60 flex-1 rounded-md border border-border p-2">
             <Text className="text-muted-foreground text-[10px] tracking-wide uppercase">
               Uptime
             </Text>
@@ -36,7 +43,7 @@ export function StatusSidebar({ nodes }: StatusSidebarProps) {
               {summary.avgUptime.toFixed(2)}%
             </Text>
           </View>
-          <View className="bg-background/60 flex-1 rounded-md border p-2">
+          <View className="bg-background/60 flex-1 rounded-md border border-border p-2">
             <Text className="text-muted-foreground text-[10px] tracking-wide uppercase">
               Edges up
             </Text>
@@ -57,7 +64,7 @@ export function StatusSidebar({ nodes }: StatusSidebarProps) {
           return (
             <View
               key={node.id}
-              className="flex-row items-center gap-2.5 border-b px-3 py-2"
+              className="flex-row items-center gap-2.5 border-b border-border px-3 py-2"
             >
               <View className={cn("size-2 shrink-0 rounded-full", meta.dot)} />
 

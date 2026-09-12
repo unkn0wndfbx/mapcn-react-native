@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { useColorScheme, View } from "react-native";
+import { useColorScheme, useWindowDimensions, View } from "react-native";
 
 import {
   getStatusBarIslandClassName,
@@ -23,12 +23,22 @@ export function PhoneFrame({
 }: PropsWithChildren<PhoneFrameProps>) {
   const systemTheme = useColorScheme() === "dark" ? "dark" : "light";
   const resolvedContentTheme = contentTheme ?? systemTheme;
+  const { width: windowWidth } = useWindowDimensions();
+
+  const horizontalPadding = 32;
+  const maxWidth = Math.max(windowWidth - horizontalPadding, 0);
+  const baseWidth = width;
+  const baseHeight = height;
+  const scale =
+    maxWidth > 0 && baseWidth > 0 ? Math.min(1, maxWidth / baseWidth) : 1;
+  const frameWidth = baseWidth * scale;
+  const frameHeight = baseHeight * scale;
 
   return (
     <View className={cn("items-center justify-center", className)}>
       <View
         className="overflow-hidden rounded-[2.5rem] border-10 border-neutral-800 bg-neutral-950 shadow-xl"
-        style={{ width, height }}
+        style={{ width: frameWidth, height: frameHeight }}
       >
         <View className="bg-background relative h-full w-full overflow-hidden rounded-[1.75rem]">
           <View

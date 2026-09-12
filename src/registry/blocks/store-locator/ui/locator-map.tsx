@@ -1,5 +1,5 @@
 import { Clock, MapPin, Phone } from "lucide-react-native";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { View } from "react-native";
 
 import type { Store } from "../data";
@@ -11,8 +11,8 @@ import {
   Map,
   MapControls,
   MapMarker,
-  MapPopup,
   MarkerContent,
+  MarkerPopup,
   MarkerTooltip,
   useMap,
 } from "@/registry/map";
@@ -57,6 +57,65 @@ function StorePin({ active }: { active: boolean }) {
   );
 }
 
+function StorePopupContent({ store }: { store: Store }) {
+  return (
+    <>
+      <Text className="text-popover-foreground pr-5 font-medium">
+        {store.name}
+      </Text>
+      <View className="mt-1 flex-row items-center gap-1.5">
+        <View
+          className={cn(
+            "size-1.5 rounded-full",
+            store.openNow ? "bg-emerald-500" : "bg-neutral-500",
+          )}
+        />
+        <Text
+          className={cn(
+            "text-xs font-medium",
+            store.openNow ? "text-foreground" : "text-muted-foreground",
+          )}
+        >
+          {store.openNow ? "Open now" : "Closed"}
+        </Text>
+      </View>
+
+      <View className="mt-2.5 gap-1.5">
+        <View className="flex-row items-center gap-1.5">
+          <Icon
+            as={MapPin}
+            size={14}
+            className="text-muted-foreground shrink-0"
+          />
+          <Text className="text-muted-foreground text-xs tabular-nums">
+            {store.address}, {store.neighborhood}
+          </Text>
+        </View>
+        <View className="flex-row items-center gap-1.5">
+          <Icon
+            as={Clock}
+            size={14}
+            className="text-muted-foreground shrink-0"
+          />
+          <Text className="text-muted-foreground text-xs tabular-nums">
+            {store.hours}
+          </Text>
+        </View>
+        <View className="flex-row items-center gap-1.5">
+          <Icon
+            as={Phone}
+            size={14}
+            className="text-muted-foreground shrink-0"
+          />
+          <Text className="text-muted-foreground text-xs tabular-nums">
+            {store.phone}
+          </Text>
+        </View>
+      </View>
+    </>
+  );
+}
+
 export function LocatorMap({
   stores,
   selectedId,
@@ -65,6 +124,10 @@ export function LocatorMap({
   center,
 }: LocatorMapProps) {
   const selected = stores.find((store) => store.id === selectedId);
+  const orderedStores = useMemo(() => {
+    if (!selected) return stores;
+    return [...stores.filter((store) => store.id !== selected.id), selected];
+  }, [selected, stores]);
 
   return (
     <View className="relative flex-1">
@@ -76,94 +139,38 @@ export function LocatorMap({
         <MapControls showCompass />
         <FlyToSelected store={selected} />
 
-        {stores.map((store) => (
-          <MapMarker
-            key={store.id}
-            longitude={store.lng}
-            latitude={store.lat}
-            onClick={() => {
-              onSelect(store.id);
-            }}
-          >
-            <MarkerContent>
-              <StorePin active={store.id === selectedId} />
-            </MarkerContent>
-            <MarkerTooltip className="bg-foreground">
-              <Text className="text-background">{store.name}</Text>
-            </MarkerTooltip>
-          </MapMarker>
-        ))}
-
-        {selected ? (
-          <MapPopup
-            longitude={selected.lng}
-            latitude={selected.lat}
-            closeButton
-            closeOnClick={false}
-            onClose={onClearSelection}
-            className="min-w-56"
-          >
-            <Text className="text-popover-foreground pr-5 font-medium">
-              {selected.name}
-            </Text>
-            <View
-              className={cn(
-                "mt-1 flex-row items-center gap-1.5",
-                selected.openNow ? "text-foreground" : "text-muted-foreground",
-              )}
+        {orderedStores.map((store) => {
+          const active = store.id === selectedId;
+          return (
+            <MapMarker
+              key={store.id}
+              longitude={store.lng}
+              latitude={store.lat}
+              onClick={() => {
+                onSelect(store.id);
+              }}
             >
-              <View
-                className={cn(
-                  "size-1.5 rounded-full",
-                  selected.openNow ? "bg-emerald-500" : "bg-neutral-500",
-                )}
-              />
-              <Text
-                className={cn(
-                  "text-xs font-medium",
-                  selected.openNow
-                    ? "text-foreground"
-                    : "text-muted-foreground",
-                )}
-              >
-                {selected.openNow ? "Open now" : "Closed"}
-              </Text>
-            </View>
-
-            <View className="mt-2.5 gap-1.5">
-              <View className="flex-row items-center gap-1.5">
-                <Icon
-                  as={MapPin}
-                  size={14}
-                  className="text-muted-foreground shrink-0"
-                />
-                <Text className="text-muted-foreground text-xs tabular-nums">
-                  {selected.address}, {selected.neighborhood}
-                </Text>
-              </View>
-              <View className="flex-row items-center gap-1.5">
-                <Icon
-                  as={Clock}
-                  size={14}
-                  className="text-muted-foreground shrink-0"
-                />
-                <Text className="text-muted-foreground text-xs tabular-nums">
-                  {selected.hours}
-                </Text>
-              </View>
-              <View className="flex-row items-center gap-1.5">
-                <Icon
-                  as={Phone}
-                  size={14}
-                  className="text-muted-foreground shrink-0"
-                />
-                <Text className="text-muted-foreground text-xs tabular-nums">
-                  {selected.phone}
-                </Text>
-              </View>
-            </View>
-          </MapPopup>
-        ) : null}
+              <MarkerContent>
+                <StorePin active={active} />
+                {active ? (
+                  <MarkerPopup
+                    closeButton
+                    closeOnClick={false}
+                    onClose={onClearSelection}
+                    className="min-w-56"
+                  >
+                    <StorePopupContent store={store} />
+                  </MarkerPopup>
+                ) : null}
+              </MarkerContent>
+              {active ? null : (
+                <MarkerTooltip className="bg-foreground">
+                  <Text className="text-background">{store.name}</Text>
+                </MarkerTooltip>
+              )}
+            </MapMarker>
+          );
+        })}
       </Map>
     </View>
   );

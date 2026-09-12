@@ -6,7 +6,11 @@ import {
   Platform,
   StyleSheet,
   useColorScheme,
+  useWindowDimensions,
   View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
 
 import { AppStoreIcon } from "@/atoms/AppStoreIcon";
@@ -15,11 +19,17 @@ import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { PlayStoreIcon } from "@/atoms/PlayStoreIcon";
 import { Text } from "@/atoms/Text";
-import { SITE_APP_STORE_URL, SITE_PLAY_STORE_URL } from "@/lib/Config/SiteMetadata";
+import {
+  SITE_APP_STORE_URL,
+  SITE_PLAY_STORE_URL,
+} from "@/lib/Config/SiteMetadata";
 import { THEME } from "@/lib/Config/Theme";
 import { cn } from "@/lib/Utils/Cn";
 
 const DEFAULT_PHONE_ASPECT_RATIO = 9 / 19.5;
+const PORTRAIT_ASPECT_RATIO = 9 / 16;
+const DOCS_PREVIEW_IMAGE_SIZE = 360;
+const COMPACT_BREAKPOINT = 640;
 
 type WebMapPreviewPlaceholderProps = {
   className?: string;
@@ -27,7 +37,35 @@ type WebMapPreviewPlaceholderProps = {
   previewImage?: string;
   previewImageDark?: string;
   layout?: "overlay" | "aside";
+  previewShape?: "square" | "portrait";
 };
+
+function getPortraitPreviewSize(
+  availableWidth: number,
+  availableHeight: number,
+  aspectRatio: number,
+  isCompact: boolean,
+): { width: number; height: number } {
+  if (availableWidth <= 0 || availableHeight <= 0) {
+    return { width: 0, height: 0 };
+  }
+
+  const gap = 24;
+  const infoWidth = isCompact ? 0 : 288;
+  const maxWidth = isCompact
+    ? availableWidth
+    : Math.max(availableWidth - infoWidth - gap, availableWidth * 0.7);
+  const maxHeight = availableHeight;
+  let height = maxHeight;
+  let width = height * aspectRatio;
+
+  if (width > maxWidth) {
+    width = maxWidth;
+    height = width / aspectRatio;
+  }
+
+  return { width, height };
+}
 
 function openStoreUrl(url: string) {
   if (Platform.OS === "web") {
@@ -45,6 +83,7 @@ function PreviewImage({
   onImageError,
   onImageLoad,
   imageAspectRatio,
+  style,
 }: {
   className?: string;
   contentFit?: "cover" | "contain";
@@ -53,20 +92,22 @@ function PreviewImage({
   onImageError: (image: string) => void;
   onImageLoad?: (aspectRatio: number) => void;
   imageAspectRatio?: number | null;
+  style?: StyleProp<ViewStyle>;
 }) {
   const showImage = Boolean(previewImage) && failedImage !== previewImage;
-  const usesIntrinsicWidth = contentFit === "contain";
+  const usesIntrinsicWidth = contentFit === "contain" && style === undefined;
 
   return (
     <View
       className={cn("bg-muted relative overflow-hidden", className)}
-      style={
+      style={[
         usesIntrinsicWidth
           ? {
               aspectRatio: imageAspectRatio ?? DEFAULT_PHONE_ASPECT_RATIO,
             }
-          : undefined
-      }
+          : undefined,
+        style,
+      ]}
     >
       {showImage && previewImage ? (
         <Image
@@ -82,14 +123,16 @@ function PreviewImage({
               onImageLoad?.(width / height);
             }
           }}
+          contentPosition="center"
           style={StyleSheet.absoluteFill}
           accessibilityLabel="Map preview screenshot"
         />
       ) : (
-        <View className="absolute inset-0 items-center justify-center text-muted-foreground">
+        <View className="h-full min-h-40 w-full items-center justify-center p-6">
           <Icon
             as={ImageIcon}
-            className="text-muted-foreground size-10 opacity-75"
+            size={40}
+            className="text-muted-foreground opacity-75"
           />
         </View>
       )}
@@ -164,16 +207,23 @@ function StoreButtons({ variant }: { variant: "overlay" | "aside" }) {
 function PreviewInfo({
   title,
   layout,
+  className,
 }: {
   title: string;
   layout: "overlay" | "aside";
+  className?: string;
 }) {
   if (layout === "aside") {
     const showAppStore = SITE_APP_STORE_URL.length > 0;
     const showPlayStore = SITE_PLAY_STORE_URL.length > 0;
 
     return (
-      <View className="border-border bg-surface min-w-0 flex-1 rounded-xl border p-5 flex-col justify-center">
+      <View
+        className={cn(
+          "border-border bg-surface min-w-0 flex-1 rounded-xl border p-5 flex-col justify-center",
+          className,
+        )}
+      >
         <View className="gap-5">
           <View className="flex-row items-center gap-3">
             <View className="bg-primary/10 rounded-lg p-2.5">
@@ -248,12 +298,21 @@ export function WebMapPreviewPlaceholder({
   previewImage,
   previewImageDark,
   layout = "overlay",
+  previewShape = "square",
 }: WebMapPreviewPlaceholderProps) {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light";
+  const { width: windowWidth } = useWindowDimensions();
+  const isCompact = windowWidth < COMPACT_BREAKPOINT;
+  const isPortrait = previewShape === "portrait";
   const [failedImage, setFailedImage] = useState<string | null>(null);
   const [useLightFallback, setUseLightFallback] = useState(false);
-  const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
-  const hasFixedHeight = Boolean(className?.match(/(?:^|\s)h-/));
+  const [frameSize, setFrameSize] = useState({ width: 0, height: 0 });
+  const portraitSize = getPortraitPreviewSize(
+    frameSize.width,
+    frameSize.height,
+    PORTRAIT_ASPECT_RATIO,
+    isCompact,
+  );
 
   const activePreviewImage =
     colorScheme === "dark" && previewImageDark && !useLightFallback
@@ -263,7 +322,6 @@ export function WebMapPreviewPlaceholder({
   useEffect(() => {
     setFailedImage(null);
     setUseLightFallback(false);
-    setImageAspectRatio(null);
   }, [previewImage, previewImageDark, colorScheme]);
 
   function handleImageError(image: string) {
@@ -275,21 +333,91 @@ export function WebMapPreviewPlaceholder({
     setFailedImage(image);
   }
 
+  function handleFrameLayout(event: LayoutChangeEvent) {
+    const { width, height } = event.nativeEvent.layout;
+    setFrameSize((current) => {
+      if (current.width === width && current.height === height) {
+        return current;
+      }
+
+      return { width, height };
+    });
+  }
+
   if (layout === "aside") {
+    if (isPortrait) {
+      return (
+        <View className="relative h-full w-full">
+          <View
+            pointerEvents="none"
+            onLayout={handleFrameLayout}
+            style={StyleSheet.absoluteFill}
+          />
+          <View
+            className={cn(
+              "h-full w-full gap-6",
+              isCompact
+                ? "flex-col items-center"
+                : "flex-row items-stretch justify-center",
+            )}
+          >
+            <PreviewImage
+              className="border-border h-full shrink-0 rounded-3xl border shadow-md cursor-not-allowed select-none"
+              contentFit="cover"
+              previewImage={activePreviewImage}
+              failedImage={failedImage}
+              onImageError={handleImageError}
+              imageAspectRatio={PORTRAIT_ASPECT_RATIO}
+              style={
+                portraitSize.width > 0
+                  ? {
+                      width: portraitSize.width,
+                      height: portraitSize.height,
+                      aspectRatio: PORTRAIT_ASPECT_RATIO,
+                      borderCurve: "continuous",
+                    }
+                  : {
+                      aspectRatio: PORTRAIT_ASPECT_RATIO,
+                      height: "100%",
+                      borderCurve: "continuous",
+                    }
+              }
+            />
+            <View
+              className={
+                isCompact ? "w-full" : "h-full w-72 max-w-full shrink-0"
+              }
+            >
+              <PreviewInfo
+                title={title}
+                layout="aside"
+                className={isCompact ? undefined : "h-full"}
+              />
+            </View>
+          </View>
+        </View>
+      );
+    }
+
     return (
-      <View className="w-full flex-row items-stretch gap-6 cursor-not-allowed select-none">
+      <View
+        className={cn(
+          "w-full gap-6",
+          isCompact ? "flex-col items-center" : "flex-row items-stretch",
+        )}
+      >
         <PreviewImage
-          className={cn(
-            "border-border shrink-0 min-w-0 rounded-lg border",
-            !hasFixedHeight && "aspect-square w-1/2",
-            className,
-          )}
-          contentFit={hasFixedHeight ? "contain" : "cover"}
+          className="border-border max-w-full shrink-0 rounded-lg border cursor-not-allowed select-none"
+          contentFit="cover"
           previewImage={activePreviewImage}
           failedImage={failedImage}
           onImageError={handleImageError}
-          onImageLoad={setImageAspectRatio}
-          imageAspectRatio={imageAspectRatio}
+          style={{
+            width: DOCS_PREVIEW_IMAGE_SIZE,
+            maxWidth: "100%",
+            aspectRatio: 1,
+            borderCurve: "continuous",
+          }}
         />
         <PreviewInfo
           title={title}
@@ -300,14 +428,9 @@ export function WebMapPreviewPlaceholder({
   }
 
   return (
-    <View
-      className={cn(
-        "bg-muted relative flex-1 overflow-hidden cursor-not-allowed select-none",
-        className,
-      )}
-    >
+    <View className={cn("bg-muted relative flex-1 overflow-hidden", className)}>
       <PreviewImage
-        className="absolute inset-0"
+        className="absolute inset-0 cursor-not-allowed select-none"
         previewImage={activePreviewImage}
         failedImage={failedImage}
         onImageError={handleImageError}

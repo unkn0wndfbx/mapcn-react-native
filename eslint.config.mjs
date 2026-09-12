@@ -165,6 +165,7 @@ export default tseslint.config(
   {
     files: [
       "**/app/**/*.{js,jsx,ts,tsx}",
+      "**/registry/blocks/**/page.tsx",
       "**/*.stories.{js,jsx,ts,tsx}",
       "**/*.config.{js,mjs,cjs,ts}",
       "**/*.d.ts",

@@ -6,6 +6,7 @@ import { ExamplesGrid } from "./ExamplesGrid";
 import { Button } from "@/atoms/Button";
 import { Text } from "@/atoms/Text";
 import { AgentPrompt } from "@/molecules/AgentPrompt";
+import { PortfolioShoutOut } from "@/molecules/PortfolioShoutOut";
 import { GetTheApp } from "@/organisms/GetTheApp";
 import {
   PageActions,
@@ -21,6 +22,16 @@ export const HomePage = () => {
       lockParentScroll
       header={
         <PageHeader>
+          <View
+            className="animate-fade-up animate-stagger"
+            style={
+              {
+                "--stagger": 0.5,
+              } as StyleProp<ViewStyle>
+            }
+          >
+            <PortfolioShoutOut placement="hero" />
+          </View>
           <PageHeaderHeading>Beautiful maps, made simple</PageHeaderHeading>
           <PageHeaderDescription>
             Ready to use, customizable map components for React Native. Built on

@@ -24,6 +24,7 @@ import {
   cloneElement,
   createContext,
   forwardRef,
+  Fragment,
   isValidElement,
   useCallback,
   useContext,
@@ -165,6 +166,8 @@ type MapProps = Omit<
   viewport?: Partial<MapViewport>;
   onViewportChange?: (viewport: MapViewport) => void;
   loading?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 };
 
 function MapLoader() {
@@ -193,6 +196,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     style,
     onPress,
     dragPan = true,
+    minZoom,
+    maxZoom,
     ...props
   },
   ref,
@@ -204,8 +209,10 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const [map, setMap] = useState<MapRef | null>(null);
   const [camera, setCamera] = useState<CameraRef | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isStyleLoaded, setIsStyleLoaded] = useState(false);
-  const [nativeDragPan, setNativeDragPan] = useState(false);
+  const [loadedMapStyle, setLoadedMapStyle] = useState<MapStyleOption | null>(
+    null,
+  );
+  const [styleEpoch, setStyleEpoch] = useState(0);
   const internalUpdateRef = useRef(false);
   const onViewportChangeRef = useRef(onViewportChange);
   const mapPressListenersRef = useRef(new Set<MapPressListener>());
@@ -213,10 +220,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   useEffect(() => {
     onViewportChangeRef.current = onViewportChange;
   }, [onViewportChange]);
-
-  useEffect(() => {
-    setNativeDragPan(dragPan);
-  }, [dragPan]);
 
   const addMapPressListener = useCallback((listener: MapPressListener) => {
     mapPressListenersRef.current.add(listener);
@@ -260,6 +263,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   }, [stableStyles, blank]);
 
   const mapStyle = resolvedTheme === "dark" ? mapStyles.dark : mapStyles.light;
+  const isStyleLoaded = loadedMapStyle === mapStyle;
 
   useImperativeHandle(ref, () => {
     if (!nativeMapRef.current) {
@@ -311,10 +315,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     };
   }, [camera, currentViewport, isControlled, viewport]);
 
-  useEffect(() => {
-    setIsStyleLoaded(false);
-  }, [mapStyle]);
-
   const contextValue = useMemo(
     () => ({
       camera,
@@ -341,7 +341,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
         <MapLibreMap
           androidView="texture"
           {...props}
-          dragPan={nativeDragPan}
+          dragPan={dragPan}
           ref={(instance) => {
             nativeMapRef.current = instance;
             setMap(instance);
@@ -351,7 +351,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
             setIsLoaded(true);
           }}
           onDidFinishLoadingStyle={() => {
-            setIsStyleLoaded(true);
+            setLoadedMapStyle(mapStyle);
+            setStyleEpoch((epoch) => epoch + 1);
           }}
           onPress={handleMapPress}
           onRegionIsChanging={(event) => {
@@ -372,9 +373,13 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
               cameraRef.current = instance;
               setCamera(instance);
             }}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
             {...(isControlled ? cameraState : { initialViewState })}
           />
-          {isStyleLoaded ? children : null}
+          {isStyleLoaded ? (
+            <Fragment key={styleEpoch}>{children}</Fragment>
+          ) : null}
         </MapLibreMap>
         {!isLoaded || !isStyleLoaded || loading ? <MapLoader /> : null}
       </View>
@@ -962,7 +967,11 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       },
       (error: unknown) => {
         clearTimeout(timer);
-        reject(error);
+        reject(
+          error instanceof Error
+            ? error
+            : new Error("Map operation failed", { cause: error }),
+        );
       },
     );
   });

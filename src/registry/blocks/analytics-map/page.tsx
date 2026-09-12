@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import {
   browsersRows,
@@ -27,9 +27,13 @@ const WORLD_GEOJSON =
 
 export default function Page() {
   return (
-    <View className="bg-background relative min-h-screen flex-1">
+    <ScrollView
+      className="bg-background flex-1"
+      contentContainerClassName="pb-4"
+      showsVerticalScrollIndicator={false}
+    >
       <View
-        className="bg-card relative"
+        className="bg-card relative border-b border-border"
         style={{ height: MAP_HEIGHT }}
       >
         <Map
@@ -37,7 +41,6 @@ export default function Page() {
           viewport={{ center: [-2, 16], zoom: 1.4 }}
           maxZoom={4}
           minZoom={1.4}
-          dragPan={false}
           touchRotate={false}
           touchPitch={false}
         >
@@ -62,7 +65,9 @@ export default function Page() {
                 />
               </MarkerContent>
               <MarkerTooltip className="bg-popover border-border border">
-                <Text className="font-medium">{location.city}</Text>
+                <Text className="text-foreground font-medium">
+                  {location.city}
+                </Text>
                 <Text className="text-muted-foreground mt-0.5">
                   {location.size} active users
                 </Text>
@@ -103,6 +108,6 @@ export default function Page() {
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

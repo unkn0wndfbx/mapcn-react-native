@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { edgeNodes, mapView, WORLD_GEOJSON } from "./data";
 import { EdgeNodeMarker } from "./ui/edge-node-marker";
@@ -7,12 +8,24 @@ import { StatusSidebar } from "./ui/status-sidebar";
 import { Map, MapControls, MapGeoJSON } from "@/registry/map";
 
 export default function Page() {
-  return (
-    <View className="min-h-screen flex-1 items-center justify-center p-4">
-      <View className="bg-card h-[500px] w-full max-w-4xl flex-row overflow-hidden rounded-xl border shadow-sm">
-        <StatusSidebar nodes={edgeNodes} />
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 768;
+  const pagePadding = isCompact ? 12 : 16;
 
-        <View className="relative min-w-0 flex-1">
+  return (
+    <View
+      className="flex-1 items-center justify-center p-3 md:p-4"
+      style={{ paddingBottom: pagePadding + insets.bottom }}
+    >
+      <View
+        className={
+          isCompact
+            ? "bg-card h-full w-full flex-col overflow-hidden rounded-xl border border-border shadow-sm"
+            : "bg-card h-[500px] w-full max-w-4xl flex-row overflow-hidden rounded-xl border border-border shadow-sm"
+        }
+      >
+        <View className={isCompact ? "h-[55%] min-h-72" : "min-w-0 flex-1"}>
           <Map
             blank
             viewport={{
@@ -21,7 +34,6 @@ export default function Page() {
             }}
             minZoom={mapView.minZoom}
             maxZoom={mapView.maxZoom}
-            dragPan={false}
             touchRotate={false}
             touchPitch={false}
           >
@@ -40,6 +52,11 @@ export default function Page() {
             <MapControls className="bottom-2" />
           </Map>
         </View>
+
+        <StatusSidebar
+          nodes={edgeNodes}
+          compact={isCompact}
+        />
       </View>
     </View>
   );

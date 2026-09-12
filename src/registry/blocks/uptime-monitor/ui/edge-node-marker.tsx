@@ -26,17 +26,20 @@ export function EdgeNodeMarker({ node }: EdgeNodeMarkerProps) {
       <MarkerTooltip className="bg-popover border-border min-w-28 border p-2">
         <View className="flex-row items-center gap-1.5">
           <View className={cn("size-1.5 rounded-full", meta.dot)} />
-          <Text className="text-[11px] font-medium">{node.city}</Text>
+          <Text className="text-foreground text-[11px] font-medium">
+            {node.city}
+          </Text>
+
           <Text className="text-muted-foreground ml-auto font-mono text-[11px] uppercase">
             {node.id}
           </Text>
         </View>
         <View className="mt-1.5 flex-row items-center justify-between gap-3">
           <Text className="text-muted-foreground text-[11px]">
-            {node.status === "down" ? "-" : `${node.latency} ms`}
+            {node.status === "down" ? "-" : `${String(node.latency)} ms`}
           </Text>
           <Text className="text-muted-foreground text-[11px] tabular-nums">
-            {node.uptime.toFixed(2)}%
+            {`${node.uptime.toFixed(2)}%`}
           </Text>
         </View>
       </MarkerTooltip>

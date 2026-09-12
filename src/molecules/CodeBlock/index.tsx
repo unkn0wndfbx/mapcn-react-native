@@ -11,9 +11,9 @@ import {
 import { Button } from "@/atoms/Button";
 import { Icon } from "@/atoms/Icon";
 import { Text } from "@/atoms/Text";
+import { THEME } from "@/lib/Config/Theme";
 import { copyText } from "@/lib/Platform/Clipboard";
 import { highlightCode } from "@/lib/Platform/Highlight";
-import { THEME } from "@/lib/Config/Theme";
 import { cn } from "@/lib/Utils/Cn";
 import { CodeSurface } from "@/molecules/CodeSurface";
 
@@ -24,6 +24,9 @@ interface CodeBlockProps {
   language?: string;
   showCopyButton?: boolean;
   showLineNumbers?: boolean;
+  showHeader?: boolean;
+  fill?: boolean;
+  className?: string;
 }
 
 export function CodeBlock({
@@ -31,6 +34,9 @@ export function CodeBlock({
   language = "tsx",
   showCopyButton = true,
   showLineNumbers = true,
+  showHeader = true,
+  fill = false,
+  className,
 }: CodeBlockProps) {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light";
   const codeBackgroundColor =
@@ -48,6 +54,7 @@ export function CodeBlock({
     }
 
     let isCurrent = true;
+    setHighlighted(null);
 
     void highlightCode(code, language)
       .then((html) => {
@@ -74,90 +81,111 @@ export function CodeBlock({
     }
   }, [code]);
 
-  return (
+  const nativeBody = (
     <View
-      className="border-border w-full overflow-hidden rounded-xl border"
+      className="flex-row"
       style={{ backgroundColor: codeBackgroundColor }}
     >
-      <View className="bg-surface border-border h-11 flex-row items-center border-b px-3">
-        <Text className="text-muted-foreground flex-1 font-mono text-xs font-medium uppercase tracking-wider">
-          {language}
-        </Text>
-        {showCopyButton ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            onPress={() => {
-              void copy();
-            }}
-            accessibilityLabel={copied ? "Copied" : "Copy code"}
-            className="text-muted-foreground size-8 rounded-md"
-          >
-            <Icon
-              as={copied ? Check : Copy}
-              size={15}
-            />
-          </Button>
-        ) : null}
-      </View>
+      {showLineNumbers ? (
+        <View
+          className="border-border z-10 border-r px-3 py-4"
+          style={{ backgroundColor: codeBackgroundColor }}
+        >
+          {codeLines.map((_, index) => (
+            <View
+              key={index}
+              style={styles.line}
+            >
+              <Text className="text-code-number font-mono text-xs tabular-nums">
+                {index + 1}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+      <ScrollView
+        horizontal
+        className="min-w-0 flex-1"
+        contentContainerClassName="min-w-full px-4 py-4"
+        showsHorizontalScrollIndicator={false}
+      >
+        <View>
+          {codeLines.map((line, lineIndex) => (
+            <View
+              key={lineIndex}
+              style={styles.line}
+            >
+              <Text
+                selectable
+                className="text-foreground font-mono text-xs"
+              >
+                {line.map((token, tokenIndex) => (
+                  <Text
+                    key={tokenIndex}
+                    className={cn(token.className, "text-xs")}
+                  >
+                    {token.value || " "}
+                  </Text>
+                ))}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+
+  return (
+    <View
+      className={cn(
+        "border-border w-full overflow-hidden rounded-xl border",
+        fill && "flex min-h-0 flex-1 flex-col",
+        className,
+      )}
+      style={{ backgroundColor: codeBackgroundColor }}
+    >
+      {showHeader ? (
+        <View className="bg-surface border-border h-11 flex-row items-center border-b px-3">
+          <Text className="text-muted-foreground flex-1 font-mono text-xs font-medium uppercase tracking-wider">
+            {language}
+          </Text>
+          {showCopyButton ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onPress={() => {
+                void copy();
+              }}
+              accessibilityLabel={copied ? "Copied" : "Copy code"}
+              className="text-muted-foreground size-8 rounded-md"
+            >
+              <Icon
+                as={copied ? Check : Copy}
+                size={15}
+              />
+            </Button>
+          ) : null}
+        </View>
+      ) : null}
       {Platform.OS === "web" && highlighted ? (
         <CodeSurface
-          className="max-h-[30rem] overflow-auto"
+          className={
+            fill
+              ? "min-h-0 flex-1 overflow-auto"
+              : "max-h-[30rem] overflow-auto"
+          }
           html={highlighted}
           style={{ backgroundColor: codeBackgroundColor }}
         />
-      ) : (
-        <View
-          className="flex-row"
+      ) : fill ? (
+        <ScrollView
+          className="min-h-0 flex-1"
           style={{ backgroundColor: codeBackgroundColor }}
         >
-          {showLineNumbers ? (
-            <View
-              className="border-border z-10 border-r px-3 py-4"
-              style={{ backgroundColor: codeBackgroundColor }}
-            >
-              {codeLines.map((_, index) => (
-                <View
-                  key={index}
-                  style={styles.line}
-                >
-                  <Text className="text-code-number font-mono text-xs tabular-nums">
-                    {index + 1}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          ) : null}
-          <ScrollView
-            horizontal
-            className="min-w-0 flex-1"
-            contentContainerClassName="min-w-full px-4 py-4"
-            showsHorizontalScrollIndicator={false}
-          >
-            <View>
-              {codeLines.map((line, lineIndex) => (
-                <View
-                  key={lineIndex}
-                  style={styles.line}
-                >
-                  <Text
-                    selectable
-                    className="text-foreground font-mono text-xs"
-                  >
-                    {line.map((token, tokenIndex) => (
-                      <Text
-                        key={tokenIndex}
-                        className={cn(token.className, "text-xs")}
-                      >
-                        {token.value || " "}
-                      </Text>
-                    ))}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
+          {nativeBody}
+        </ScrollView>
+      ) : (
+        nativeBody
       )}
     </View>
   );

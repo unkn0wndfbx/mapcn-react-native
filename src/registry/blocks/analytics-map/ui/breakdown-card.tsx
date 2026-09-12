@@ -39,7 +39,7 @@ export function BreakdownCard({ title, rows }: BreakdownCardProps) {
               >
                 <View
                   className="bg-chart-2/20 absolute inset-y-0 left-0 rounded-md"
-                  style={{ width: `${pct}%` }}
+                  style={{ width: `${String(pct)}%` as `${number}%` }}
                 />
                 <Text
                   className="text-foreground/90 relative pr-2 text-xs"

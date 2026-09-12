@@ -16,9 +16,14 @@ const regionIcons: Record<Hub["region"], string> = {
 interface FilterSidebarProps {
   hubs: Hub[];
   routes: Route[];
+  compact?: boolean;
 }
 
-export function FilterSidebar({ hubs, routes }: FilterSidebarProps) {
+export function FilterSidebar({
+  hubs,
+  routes,
+  compact = false,
+}: FilterSidebarProps) {
   const totalShipments = routes.reduce((s, r) => s + r.shipments, 0);
   const activeCount = routes.filter((r) => r.status === "active").length;
   const delayedCount = routes.filter((r) => r.status === "delayed").length;
@@ -26,7 +31,13 @@ export function FilterSidebar({ hubs, routes }: FilterSidebarProps) {
   const groundRouteCount = routes.filter((r) => r.mode === "ground").length;
 
   return (
-    <View className="bg-sidebar border-sidebar-border w-72 shrink-0 border-r">
+    <View
+      className={
+        compact
+          ? "bg-sidebar border-sidebar-border min-h-0 flex-1 border-t"
+          : "bg-sidebar border-sidebar-border w-72 shrink-0 border-r"
+      }
+    >
       <View className="p-4">
         <View className="flex-row items-center gap-2">
           <View className="bg-sidebar-primary size-8 items-center justify-center rounded-lg">
@@ -44,13 +55,13 @@ export function FilterSidebar({ hubs, routes }: FilterSidebarProps) {
           </View>
         </View>
         <View className="mt-3 flex-row gap-2">
-          <View className="bg-background flex-1 items-center rounded-md border px-2.5 py-2">
+          <View className="bg-background flex-1 items-center rounded-md border border-border px-2.5 py-2">
             <Text className="text-lg leading-none font-bold tabular-nums">
               {hubs.length}
             </Text>
             <Text className="text-muted-foreground mt-1 text-[10px]">Hubs</Text>
           </View>
-          <View className="bg-background flex-1 items-center rounded-md border px-2.5 py-2">
+          <View className="bg-background flex-1 items-center rounded-md border border-border px-2.5 py-2">
             <Text className="text-lg leading-none font-bold tabular-nums">
               {activeCount}
             </Text>
@@ -58,7 +69,7 @@ export function FilterSidebar({ hubs, routes }: FilterSidebarProps) {
               Active
             </Text>
           </View>
-          <View className="bg-background flex-1 items-center rounded-md border px-2.5 py-2">
+          <View className="bg-background flex-1 items-center rounded-md border border-border px-2.5 py-2">
             <Text className="text-lg leading-none font-bold tabular-nums">
               {delayedCount}
             </Text>
@@ -172,7 +183,7 @@ export function FilterSidebar({ hubs, routes }: FilterSidebarProps) {
         <Text className="text-muted-foreground mb-2 text-[11px] font-medium tracking-wider uppercase">
           Summary
         </Text>
-        <View className="bg-background gap-1.5 rounded-md border px-3 py-2">
+        <View className="bg-background gap-1.5 rounded-md border border-border px-3 py-2">
           <View className="flex-row justify-between">
             <Text className="text-muted-foreground text-xs">Shipments</Text>
             <Text className="text-xs font-medium tabular-nums">

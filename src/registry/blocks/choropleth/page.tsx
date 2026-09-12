@@ -1,31 +1,13 @@
 import { useMemo, useState } from "react";
 import { useColorScheme, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { mapConfig, visitorsByCountry, type Theme } from "./data";
+import { buildFillColor } from "./utils";
 
 import { Text } from "@/atoms/Text";
 import { useWorldData } from "@/hooks/WorldData";
 import { Map, MapControls, MapGeoJSON, MapPopup } from "@/registry/map";
-
-function buildFillColor(theme: Theme): unknown[] {
-  const { base, ramp } = mapConfig.colors[theme];
-  const [s0, s1, s2, s3, s4] = mapConfig.scaleStops;
-  return [
-    "interpolate",
-    ["linear"],
-    ["coalesce", ["get", "visitors"], 0],
-    s0,
-    base,
-    s1,
-    ramp[0],
-    s2,
-    ramp[1],
-    s3,
-    ramp[2],
-    s4,
-    ramp[3],
-  ];
-}
 
 interface SelectedInfo {
   name: string;
@@ -45,10 +27,12 @@ type CountryFeatureCollection = GeoJSON.FeatureCollection<
 >;
 
 export default function Page() {
+  const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme: Theme = colorScheme === "dark" ? "dark" : "light";
   const [selected, setSelected] = useState<SelectedInfo | null>(null);
   const world = useWorldData();
+  const bottomInset = 8 + insets.bottom;
 
   const countries = useMemo<CountryFeatureCollection | null>(() => {
     if (!world) return null;
@@ -80,7 +64,7 @@ export default function Page() {
   );
 
   return (
-    <View className="bg-card relative h-screen flex-1 overflow-hidden">
+    <View className="bg-card relative flex-1 overflow-hidden">
       <Map
         blank
         viewport={{
@@ -89,10 +73,11 @@ export default function Page() {
         }}
         minZoom={mapConfig.view.minZoom}
         maxZoom={mapConfig.view.maxZoom}
-        dragPan={false}
         touchRotate={false}
         touchPitch={false}
         loading={!countries}
+        attributionPosition={{ bottom: bottomInset, right: 8 }}
+        logoPosition={{ bottom: bottomInset, left: 8 }}
       >
         {countries ? (
           <MapGeoJSON<CountryProperties>
@@ -117,7 +102,10 @@ export default function Page() {
             }}
           />
         ) : null}
-        <MapControls className="bottom-2" />
+        <MapControls
+          className="bottom-2"
+          style={{ bottom: bottomInset }}
+        />
         {selected ? (
           <MapPopup
             longitude={selected.lng}
@@ -144,7 +132,10 @@ export default function Page() {
         ) : null}
       </Map>
 
-      <View className="bg-card absolute bottom-4 left-4 z-10 rounded-lg border px-3 py-2.5">
+      <View
+        className="bg-card absolute left-4 z-10 rounded-lg border border-border px-3 py-2.5"
+        style={{ bottom: 16 + insets.bottom }}
+      >
         <Text className="text-foreground text-xs font-medium">
           Visitors by country
         </Text>

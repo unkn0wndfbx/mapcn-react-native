@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface DeliveryMeal {
   name: string;
   price: string;
@@ -31,6 +33,33 @@ export const mapView = {
 /** Fraction of the route the courier has already covered (0–1). */
 export const progressFraction = 0.62;
 
+const osrmRouteGeometrySchema = z.object({
+  coordinates: z.array(z.tuple([z.number(), z.number()])),
+});
+
+const osrmRouteSchema = z.object({
+  duration: z.number(),
+  distance: z.number(),
+  geometry: osrmRouteGeometrySchema,
+});
+
+const osrmResponseSchema = z.object({
+  routes: z.array(osrmRouteSchema).min(1),
+});
+
+export function parseOsrmRoute(data: unknown): OsrmRouteData | null {
+  const result = osrmResponseSchema.safeParse(data);
+  if (!result.success) {
+    return null;
+  }
+  const route = result.data.routes[0];
+  return {
+    coordinates: route.geometry.coordinates,
+    duration: route.duration,
+    distance: route.distance,
+  };
+}
+
 /**
  * OSRM demo routing endpoint. Swap in your own routing service by returning a
  * URL that responds with GeoJSON route geometry.
@@ -38,8 +67,8 @@ export const progressFraction = 0.62;
 export function buildRouteUrl(
   from: { lng: number; lat: number },
   to: { lng: number; lat: number },
-) {
-  return `https://router.project-osrm.org/route/v1/driving/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`;
+): string {
+  return `https://router.project-osrm.org/route/v1/driving/${String(from.lng)},${String(from.lat)};${String(to.lng)},${String(to.lat)}?overview=full&geometries=geojson`;
 }
 
 /**
