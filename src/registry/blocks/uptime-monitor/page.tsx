@@ -42,8 +42,8 @@ export default function Page() {
       <View
         className={
           isCompact
-            ? "bg-card h-full w-full flex-col rounded-xl border border-border shadow-sm"
-            : "bg-card h-[500px] w-full max-w-4xl flex-row rounded-xl border border-border shadow-sm"
+            ? "bg-card h-full w-full flex-col rounded-xl border border-border shadow-sm overflow-hidden"
+            : "bg-card h-[500px] w-full max-w-4xl flex-row rounded-xl border border-border shadow-sm overflow-hidden"
         }
       >
         <View
